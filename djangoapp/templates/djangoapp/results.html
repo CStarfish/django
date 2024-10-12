@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result List</title>
+</head>
+<body>
+    <h1>Results</h1>
+    <ul>
+        {% for result in results %}
+        <li>{{ result.official.user.firstname }} {{ result.official.user.lastname }}</li>
+        {% empty %}
+        <li>No results found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
