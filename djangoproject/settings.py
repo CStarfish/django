@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': 'website',
         'USER': 'jly',
         'PASSWORD': 'CSC648@Server',
-        'HOST': '50.18.54.5',  # Usually 'localhost'
+        'HOST': '127.0.0.1',  # Usually 'localhost'
         'PORT': '3306',  # Usually 3306
     }
 }
