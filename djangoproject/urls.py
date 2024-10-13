@@ -21,5 +21,6 @@ from djangoapp import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('admin/', admin.site.urls),
+    path('search/', views.search, name='search'),
     path('results/', views.results, name='results')
 ]

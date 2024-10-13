@@ -6,7 +6,10 @@ from .models import Candidate
 
 # Create your views here.
 def index(request):
-    return render(request, 'djangoapp/index.html')
+    return render(request, 'index.html')
+
+def search(request):
+    return render(request, 'djangoapp/search.html')
 
 def results(request):
     #results = User.objects.all()  # Query all users
