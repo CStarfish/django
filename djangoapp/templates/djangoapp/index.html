@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <link rel="stylesheet" href="styles.css" />
+
+</head>
+<body>
+    <header>
+        <div class="logo">Voting Guide</div>
+        <nav>
+            <ul>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Profile</a></li>
+                <li class="login"><a href="login.html">Log In / Sign Up</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="intro">
+            <h1>Welcome to Voting Guide</h1>
+            <p>Find and evaluate information about political candidates and voting processes easily.</p>
+        </section>
+        <section class="search">
+            <input type="text" id="searchBar" placeholder="Search for candidates or topics..." />
+            <button onclick="searchCandidates()">Search</button>
+            <div class="filters">
+                <h3>Filter By:</h3>
+                <label for="location">Location:</label>
+                <select id="location">
+                    <option value="">All</option>
+                    <option value="ca">California</option>
+                    <option value="ny">New York</option>
+                    <option value="tx">Texas</option>
+                    <!-- Add more states as needed -->
+                </select>
+                <label for="party">Party:</label>
+                <select id="party">
+                    <option value="">All</option>
+                    <option value="democrat">Democrat</option>
+                    <option value="republican">Republican</option>
+                    <option value="independent">Independent</option>
+                </select>
+                <label for="experience">Experience Level:</label>
+                <select id="experience">
+                    <option value="">All</option>
+                    <option value="new">New Candidate</option>
+                    <option value="experienced">Experienced</option>
+                </select>
+                <label for="topics">Topics of Interest:</label>
+                <select id="topics">
+                    <option value="">All</option>
+                    <option value="education">Education</option>
+                    <option value="environment">Environment</option>
+                    <option value="health">Health</option>
+                    <option value="economy">Economy</option>
+                    <!-- Add more topics as needed -->
+                </select>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <ul>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+        </ul>
+    </footer>
+    <script>
+        function searchCandidates() {
+            let query = document.getElementById("searchBar").value;
+            let location = document.getElementById("location").value;
+            let party = document.getElementById("party").value;
+            let experience = document.getElementById("experience").value;
+            let topics = document.getElementById("topics").value;
+            
+            console.log("Searching for:", query, location, party, experience, topics);
+        }
+    </script>
+</body>
+</html>

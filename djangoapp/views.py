@@ -5,6 +5,8 @@ from datetime import datetime
 from .models import Candidate
 
 # Create your views here.
+def index(request):
+    return render(request, 'djangoapp/index.html')
 
 def results(request):
     #results = User.objects.all()  # Query all users
