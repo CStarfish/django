@@ -7,7 +7,12 @@
     <h1>Results</h1>
     <ul>
         {% for result in results %}
-        <li>{{ result.official.user.firstname }} {{ result.official.user.lastname }}</li>
+        <!-- EX: Alice - Party: Democrat - State: California-->
+        <li>
+            {{ result.official.user.firstname }} {{ result.official.user.lastname }} -
+            Party: {{ result.official.user.political_party.name }} - 
+            State: {{ result.official.state }}
+        </li>
         {% empty %}
         <li>No results found.</li>
         {% endfor %}

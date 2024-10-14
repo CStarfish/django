@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-2wqt=g^l2k268nnrgcoo!bg=i442s@*f%2xz84cbb@)4xb_mv%
 DEBUG = True
 
 ALLOWED_HOSTS = ['50.18.54.5']
+                #'127.0.0.1'] #for testing locally
 
 
 # Application definition
@@ -122,7 +123,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'productionfiles')
+STATICFILES_DIRS = [BASE_DIR / 'static',]
 
 #Media file?
 MEDIA_URL = '/media/'
