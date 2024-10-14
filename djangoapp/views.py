@@ -6,9 +6,12 @@ from .models import Candidate
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'djangoapp/index.html')
 
 def search(request):
+    return render(request, 'djangoapp/search.html')
+
+def results(request):
     # GET search query adn filters
     query = request.GET.get('query', '')
     location = request.GET.get('location', '')
@@ -37,8 +40,6 @@ def search(request):
         candidates = candidates.filter(policies_name_icontains=topics)
         
     return render(request, 'djangoapp/results.html',{'results' : candidates})
-
-def results(request):
     #results = User.objects.all()  # Query all users
-    results = Candidate.objects.select_related('official__user').all()  # Query all users that are candidates
-    return render(request, 'djangoapp/results.html', {'results': results})
+    #results = Candidate.objects.select_related('official__user').all()  # Query all users that are candidates
+    #return render(request, 'djangoapp/results.html', {'results': results})
