@@ -6,18 +6,22 @@
 <body>
     <h1>Results</h1>
     <ul>
-        {% for result in results %}
         <!-- EX: Alice - Party: Democrat - State: California-->
-        <li>
-            <strong>Candidate:</strong>
-            {{ result.official.user.firstname }} {{ result.official.user.lastname }} -
-            Party: {{ result.official.user.political_party.name }} - 
-            State: {{ result.official.state }}
-
-            <li><strong>Policies:</strong></li>
+            <strong>Candidates:</strong>
             <ul>
-                {% for policy in result.policies.all %}
-                    <li>{{ policy.name }}: {{ policy.desc }}</li>
+            {% for candidate in candidates.all %}
+                    <li>{{ candidate.official.user.firstname }} {{ candidate.official.user.lastname }} -
+                        Party: {{ candidate.official.user.political_party.name }} - 
+                        State: {{ candidate.official.state }}</li>
+                {% empty %}
+                    <li>No candidates.</li>
+                {% endfor %}
+            </ul>
+
+            <strong>Policies:</strong>
+            <ul>
+                {% for policy in policies.all %}
+                    <li>{{ policy.name }}: {{ policy.desc }} - By {{ policy.candidate.official.user.firstname }} {{ policy.candidate.official.user.lastname }}</li>
                 {% empty %}
                     <li>No policies available for this candidate.</li>
                 {% endfor %}
@@ -26,16 +30,12 @@
             <!-- Display Candidate's Events -->
             <strong>Events:</strong>
             <ul>
-                {% for event in result.events.all %}
-                    <li>{{ event.name }} - {{ event.location }}</li>
+                {% for event in events.all %}
+                    <li>{{ event.name }} - {{ event.location }} - Host: {{ event.candidate.official.user.firstname }} {{ event.candidate.official.user.lastname }}</li>
                 {% empty %}
                     <li>No events available for this candidate.</li>
                 {% endfor %}
             </ul>
-        </li>
-        {% empty %}
-        <li>No results found.</li>
-        {% endfor %}
     </ul>
 </body>
 </html>

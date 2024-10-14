@@ -17,19 +17,21 @@ def search(request):
     return render(request, 'djangoapp/search.html')
 
 def results(request):
-    form = SearchForm(request.GET or None)
-    results = Candidate.objects.select_related('official__user').prefetch_related('policies', 'events')
+    query = request.GET.get('search')
+    candidates = None
+    policies = None
+    events = None
 
-    if form.is_valid():
-        search_term = form.cleaned_data.get('search')  # Get the search input from the form
-
-        # Filter candidates by name (case-insensitive search)
-        if search_term:
-            results = results.select_related('official__user').filter(official__user__firstname__icontains=search_term)
-
-        context = {
-            'form': form,
-            'results': results,  # Pass the filtered results to the template
-        }
-    return render(request, 'djangoapp/results.html', {"results": results})
+    if query:
+        candidates = Candidate.objects.select_related('official__user').filter(official__user__firstname__icontains=query)
+        policies = Policy.objects.filter(name__icontains=query)
+        events = Event.objects.filter(name__icontains=query)
+    else:
+        candidates = Candidate.objects.select_related('official__user')
+        policies = Policy.objects.all()
+        events = Event.objects.all()
+    
+    return render(request, 'djangoapp/results.html', {"candidates": candidates,
+                                                      "policies": policies,
+                                                      "events": events})
     #candidates = Candidate.objects.select_related('official_user')
