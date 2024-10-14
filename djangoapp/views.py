@@ -1,36 +1,35 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
+
 import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
-from .models import Candidate
+
+from .models import Candidate, Policy, Event
+
+from .forms import SearchForm
 
 # Create your views here.
 def home(request):
     return render(request, 'djangoapp/index.html')
 
 def search(request):
-    query = request.POST.get('query', '')
-    location = request.POST.get('location', '')
-
-    results = Candidate.objects.all()
-
-    if query:
-        results = results.filter(name_icontains=query)
-    if location:
-        results = results.filter(location_iexact=location)
-    return render(request, 'djangoapp/search.html', {'results': results, 'query': query, 'location': location})
+    return render(request, 'djangoapp/search.html')
 
 def results(request):
-    query = request.POST.get('query', '')
-    location = request.POST.get('location', '')
+    form = SearchForm(request.GET or None)
+    results = Candidate.objects.select_related('official__user').prefetch_related('policies', 'events')
 
-    results = Candidate.objects.all()
+    if form.is_valid():
+        search_term = form.cleaned_data.get('search')  # Get the search input from the form
 
-    if query:
-        results = results.filter(name_icontains=query)
-    if location:
-        results = results.filter(location_iexact=location)
-    return render(request, 'djangoapp/results.html', {'results': results, 'query': query, 'location': location})
-    #results = User.objects.all()  # Query all users
-    #results = Candidate.objects.select_related('official__user').all()  # Query all users that are candidates
-    #return render(request, 'djangoapp/results.html', {'results': results})
+        # Filter candidates by name (case-insensitive search)
+        if search_term:
+            results = results.select_related('official__user').filter(official__user__firstname__icontains=search_term)
+
+        context = {
+            'form': form,
+            'results': results,  # Pass the filtered results to the template
+        }
+    return render(request, 'djangoapp/results.html', {"results": results})
+    #candidates = Candidate.objects.select_related('official_user')

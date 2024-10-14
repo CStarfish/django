@@ -9,9 +9,29 @@
         {% for result in results %}
         <!-- EX: Alice - Party: Democrat - State: California-->
         <li>
+            <strong>Candidate:</strong>
             {{ result.official.user.firstname }} {{ result.official.user.lastname }} -
             Party: {{ result.official.user.political_party.name }} - 
             State: {{ result.official.state }}
+
+            <li><strong>Policies:</strong></li>
+            <ul>
+                {% for policy in result.policies.all %}
+                    <li>{{ policy.name }}: {{ policy.desc }}</li>
+                {% empty %}
+                    <li>No policies available for this candidate.</li>
+                {% endfor %}
+            </ul>
+
+            <!-- Display Candidate's Events -->
+            <strong>Events:</strong>
+            <ul>
+                {% for event in result.events.all %}
+                    <li>{{ event.name }} - {{ event.location }}</li>
+                {% empty %}
+                    <li>No events available for this candidate.</li>
+                {% endfor %}
+            </ul>
         </li>
         {% empty %}
         <li>No results found.</li>
