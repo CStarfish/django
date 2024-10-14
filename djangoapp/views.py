@@ -9,7 +9,16 @@ def index(request):
     return render(request, 'index.html')
 
 def search(request):
-    return render(request, 'djangoapp/search.html')
+    query = request.POST.get('query', '')
+    location = request.POST.get('location', '')
+
+    results = Candidate.objects.all()
+
+    if query:
+        results = results.filter(name_icontains=query)
+    if location:
+        results = results.filter(location_iexact=location)
+    return render(request, 'djangoapp/search.html', {'results': results, 'query': query, 'location': location})
 
 def results(request):
     #results = User.objects.all()  # Query all users

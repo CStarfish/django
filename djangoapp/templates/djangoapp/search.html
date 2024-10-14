@@ -14,12 +14,15 @@
             </ul>
         </nav>
     </header>
+
     <main>
         <section class="intro">
             <h1>Welcome to Voting Guide</h1>
             <p>Find and evaluate information about political candidates and voting processes easily.</p>
         </section>
         <section class="search">
+            <form method = "POST" action="{% url 'search' %}"> <!--CHANGE action AS NECESSARY FOR DEBUG-->
+            <!--ADD {% csrf_token %} AS NECESSARY https://docs.djangoproject.com/en/5.1/ref/csrf/-->
             <input type="text" id="searchBar" placeholder="Search for candidates or topics..." />
             <button onclick="searchCandidates()">Search</button>
             <div class="filters">
@@ -55,6 +58,19 @@
                     <!-- Add more topics as needed -->
                 </select>
             </div>
+        </form>
+        </section>
+        <section class="results">
+            <h2>Search Results</h2>
+            {% if results %}
+                <ul>
+                    {% for candidates in results &}
+                    <li>{{canditate.name}}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No results found.</p>
+            {% endif %}
         </section>
     </main>
     <footer>
