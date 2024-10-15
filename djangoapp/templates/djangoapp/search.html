@@ -28,12 +28,36 @@
                 <button type="submit" value="OK">Search</button>
                 <div class="filters">
                     <h3>Filter By:</h3>
-                    <input type="checkbox" id="candidate" name="candidate" value="candidate">
-                    <label for="candidate">Candidate</label><br>
-                    <input type="checkbox" id="policy" name="policy" value="policy">
-                    <label for="policy">Policy</label><br>
-                    <input type="checkbox" id="event" name="event" value="event">
-                    <label for="event">Event</label><br>
+                    <label for="location">Location:</label>
+                    <select id="location">
+                        <option value="">All</option>
+                        <option value="ca">California</option>
+                        <option value="ny">New York</option>
+                        <option value="tx">Texas</option>
+                        <!-- Add more states as needed -->
+                    </select>
+                    <label for="party">Party:</label>
+                    <select id="party">
+                        <option value="">All</option>
+                        <option value="democrat">Democrat</option>
+                        <option value="republican">Republican</option>
+                        <option value="independent">Independent</option>
+                    </select>
+                    <label for="experience">Experience Level:</label>
+                    <select id="experience">
+                        <option value="">All</option>
+                        <option value="new">New Candidate</option>
+                        <option value="experienced">Experienced</option>
+                    </select>
+                    <label for="topics">Topics of Interest:</label>
+                        <select id="topics">
+                        <option value="">All</option>
+                        <option value="education">Education</option>
+                        <option value="environment">Environment</option>
+                        <option value="health">Health</option>
+                        <option value="economy">Economy</option>
+                        <!-- Add more topics as needed -->
+                    </select>
                 </div>
             </form>
         </section>
@@ -51,9 +75,8 @@
             let party = document.getElementById("party").value;
             let experience = document.getElementById("experience").value;
             let topics = document.getElementById("topics").value;
-            
+
             console.log("Searching for:", query, location, party, experience, topics);
         }
     </script>
 </body>
-</html>
