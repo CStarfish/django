@@ -5,7 +5,7 @@ import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
 
-from .models import Candidate, Policy, Event
+from .models import User, Policy, Event, PoliticalParty
 
 from .forms import SearchForm
 
@@ -18,20 +18,46 @@ def search(request):
 
 def results(request):
     query = request.GET.get('search')
-    candidates = None
+    filter = request.GET.get('filter1')
+
+    print(f"Filter value: {filter}")
+
+    users = None
     policies = None
     events = None
+    political_party = None
 
-    if query:
-        candidates = Candidate.objects.select_related('official__user').filter(official__user__firstname__icontains=query)
-        policies = Policy.objects.filter(name__icontains=query)
-        events = Event.objects.filter(name__icontains=query)
-    else:
-        candidates = Candidate.objects.select_related('official__user')
-        policies = Policy.objects.all()
-        events = Event.objects.all()
+    match filter:
+        case 'policies':
+            if query:
+                policies = Policy.objects.filter(name__icontains=query)
+            else:
+                policies = Policy.objects.all()
+        case 'events':
+            if query:
+                events = Event.objects.filter(name__icontains=query)
+            else:
+                events = Event.objects.all()
+        case 'political party':
+            if query:
+                political_party = PoliticalParty.objects.filter(name__icontains=query)
+            else:
+                political_party = PoliticalParty.objects.all()
+        case _:
+            if query:
+                users = User.objects.filter(official__user__firstname__icontains=query)
+                policies = Policy.objects.filter(name__icontains=query)
+                events = Event.objects.filter(name__icontains=query)
+                political_party = PoliticalParty.objects.filter(name__icontains=query)
+            else:
+                users = User.objects.all()
+                policies = Policy.objects.all()
+                events = Event.objects.all()
+                political_party = PoliticalParty.objects.all()
     
-    return render(request, 'djangoapp/results.html', {"candidates": candidates,
+    return render(request, 'djangoapp/results.html', {"users": users,
                                                       "policies": policies,
-                                                      "events": events})
+                                                      "events": events,
+                                                      "political_party": political_party,
+                                                      "query": query})
     #candidates = Candidate.objects.select_related('official_user')

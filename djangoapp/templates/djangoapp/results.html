@@ -4,38 +4,64 @@
     <title>Result List</title>
 </head>
 <body>
-    <h1>Results</h1>
+    {% if not query == '' %}
+        <h1>Results for {{ query }}</h1>
+    {% endif %}
+    {% if not query.exists %}
+        <h1>Results</h1>
+    {% endif %}
     <ul>
-        <!-- EX: Alice - Party: Democrat - State: California-->
-            <strong>Candidates:</strong>
+        <!-- Display Users -->
+        {% if users.exists %}
+            <strong>Users:</strong>
             <ul>
-            {% for candidate in candidates.all %}
-                    <li>{{ candidate.official.user.firstname }} {{ candidate.official.user.lastname }} -
-                        Party: {{ candidate.official.user.political_party.name }} - 
-                        State: {{ candidate.official.state }}</li>
+                {% for user in users.all %}
+                    <li>{{ user.firstname }} {{ user.lastname }} - {{ user.email }}
                 {% empty %}
-                    <li>No candidates.</li>
+                    <li>No users match.</li>
                 {% endfor %}
             </ul>
+        {% endif %}
 
+        <!-- Display Policies -->
+        {% if policies.exists %}
             <strong>Policies:</strong>
             <ul>
                 {% for policy in policies.all %}
                     <li>{{ policy.name }}: {{ policy.desc }} - By {{ policy.candidate.official.user.firstname }} {{ policy.candidate.official.user.lastname }}</li>
                 {% empty %}
-                    <li>No policies available for this candidate.</li>
+                    <li>No policies match.</li>
                 {% endfor %}
             </ul>
+        {% endif %}
 
-            <!-- Display Candidate's Events -->
+        {% if events.exists %}
+            <!-- Display Events -->
             <strong>Events:</strong>
             <ul>
                 {% for event in events.all %}
                     <li>{{ event.name }} - {{ event.location }} - Host: {{ event.candidate.official.user.firstname }} {{ event.candidate.official.user.lastname }}</li>
                 {% empty %}
-                    <li>No events available for this candidate.</li>
+                    <li>No events match.</li>
                 {% endfor %}
             </ul>
+        {% endif %}
+
+        {% if political_party.exists %}
+            <!-- Display Political Parties -->
+            <strong>Political Parties:</strong>
+            <ul>
+                {% for party in political_party.all %}
+                    <li>{{ party.name }} - {{ party.member_count }}</li>
+                {% empty %}
+                    <li>No political parties match.</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if not users.exists and not policies.exists and not events.exists and not political_party.exists %}
+            <li>No results found...</li>
+        {% endif %}
     </ul>
 </body>
 </html>
