@@ -7,7 +7,7 @@
     {% if not query == '' %}
         <h1>Results for {{ query }}</h1>
     {% endif %}
-    {% if not query.exists %}
+    {% if query == '' %}
         <h1>Results</h1>
     {% endif %}
     <ul>
