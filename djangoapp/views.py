@@ -16,17 +16,20 @@ def home(request):
 def search(request):
     return render(request, 'djangoapp/search.html')
 
+# Output results of search with filter used
 def results(request):
     query = request.GET.get('search')
     filter = request.GET.get('filter1')
 
     print(f"Filter value: {filter}")
 
+    # Initialize holders for search results
     users = None
     policies = None
     events = None
     political_party = None
 
+    # Use switch statement to determine which filter to use
     match filter:
         case 'policies':
             if query:
@@ -43,7 +46,7 @@ def results(request):
                 political_party = PoliticalParty.objects.filter(name__icontains=query)
             else:
                 political_party = PoliticalParty.objects.all()
-        case _:
+        case _: # Default to full output of every record if no filter is selected
             if query:
                 users = User.objects.filter(official__user__firstname__icontains=query)
                 policies = Policy.objects.filter(name__icontains=query)
