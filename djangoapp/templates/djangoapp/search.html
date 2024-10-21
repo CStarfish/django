@@ -1,8 +1,8 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+<head>
     <link rel="stylesheet" href="{% static '/css/styles.css' %}">
-
 </head>
 <body>
     <header>
@@ -11,7 +11,7 @@
             <ul>
                 <li><a href="#">About</a></li>
                 <li><a href="#">Profile</a></li>
-                <li class="login"><a href="login.html">Log In / Sign Up</a></li>
+                <li class="login"><a href="{% url 'login' %}">Log In / Sign Up</a></li>
             </ul>
         </nav>
     </header>
@@ -23,19 +23,13 @@
         </section>
         <section class="search">
             <!-- Search button logic -->
-            <form method = "GET" action="{% url 'results' %}">
-                <input type="text" id="search" name="search" value="{{ current_name }}" placeholder="Search for candidates or topics..." />
-                <div class="filters">
-                    <h3>Filter By:</h3>
-                    <select id="filter1" name="filter1">
-                        <option value="">All</option>
-                        <option value="events">Events</option>
-                        <option value="policies">Policies</option>
-                        <option value="political party">Political Party</option>
-                    </select>
-                        <!-- Add more topics as needed -->
-                </div>
-                <button type="submit" value="OK">Search</button>
+            <form method="GET" action="{% url 'results' %}">
+                    {{ form.search }}
+                    <button type="submit" value="OK">Search</button>
+                    <div class="filters">
+                        <h3>Filter By:</h3>
+                        {{ form.filter1 }}
+                    </div>
             </form>
         </section>
     </main>
