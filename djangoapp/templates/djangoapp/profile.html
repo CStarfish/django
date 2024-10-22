@@ -1,31 +1,11 @@
+{% extends "djangoapp/base.html" %}
+{% block title %} Profile Page {% endblock title%}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Profile</title>
-    <link rel="stylesheet" href="{% static '/css/styles.css' %}">
-</head>
-<body>
-    <header>
-        <div class="logo">Voting Guide</div>
-        <nav>
-            <ul>
-                <li><a href="{% url 'home' %}">Home</li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Profile</a></li>
-                <li class="login">
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'logout' %}">Log Out</a>
-                    {% else %}
-                        <a href="{% url 'login' %}">Log In / Sign Up</a>
-                    {% endif %}
-                </li>
-            </ul>
-        </nav>
-    </header>
-
+{% block content %}
+<div class="jumbotron">
     <h1>{{ user_profile.username }}'s Profile</h1>
     <p>Email: {{ user_profile.email }}</p>
     <p>First name: {{ user_profile.first_name }}</p>
-    <p>Last name: {{ user_profile.last_name }}</p>
-</body>
+    <p>Last name: {{ user_profile.last_name }}</p>  
+</div>
+{% endblock %}

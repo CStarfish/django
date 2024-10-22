@@ -1,28 +1,7 @@
+{% extends "djangoapp/base.html" %}
+{% block title %} Login Page {% endblock title%}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="stylesheet" href="{% static '/css/styles.css' %}">
-</head>
-<body>
-    <header>
-        <div class="logo">Voting Guide</div>
-        <nav>
-            <ul>
-                <li><a href="{% url 'home' %}">Home</li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Profile</a></li>
-                <li class="login">
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'logout' %}">Log Out</a>
-                    {% else %}
-                        <a href="{% url 'login' %}">Log In / Sign Up</a>
-                    {% endif %}
-                </li>
-            </ul>
-        </nav>
-    </header>
-
+{% block content %}
     <main>
         <section class="intro">
             <h1>Login</h1>
@@ -39,4 +18,4 @@
             <a href="{% url 'register' %}" class="register_button">Register</a>
         </div>
     </main>
-</body>
+{% endblock %}

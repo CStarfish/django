@@ -36,8 +36,8 @@ def register_view(request):
 #login page
 def login_view(request):
     # if the user is already logged in, redirect to their profile page
-    if request.user.is_authenticated:
-        return redirect('profile', user_id = request.user.id)
+    #if request.user.is_authenticated:
+        #return redirect('profile', user_id = request.user.id)
 
     # Check if request is a post, if it's a get, that means it's user's first time entering login page
     if request.method == 'POST':
