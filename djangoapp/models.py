@@ -6,6 +6,9 @@ class User(AbstractUser):
     is_student = models.BooleanField(default=False)
     is_official = models.BooleanField(default=False)
 
+    class Meta:
+        db_table = 'User'
+
 class PoliticalParty(models.Model):
     political_party_id = models.AutoField(primary_key = True)
     name = models.CharField(max_length = 45)
@@ -45,8 +48,8 @@ class Student(models.Model):
         on_delete = models.CASCADE,
         primary_key = True
     )
-    school_id = models.CharField(max_length = 8, null = False, blank = False)
-    school_name = models.CharField(max_length = 45, null = False, blank = False)
+    school_id = models.CharField(max_length = 8, null = True, blank = True)
+    school_name = models.CharField(max_length = 45, null = True, blank = True)
 
     class Meta:
         db_table = 'Student'

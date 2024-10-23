@@ -21,15 +21,15 @@ class RegistrationForm(UserCreationForm):
         return user
     
 class StudentRegistrationForm(forms.ModelForm):
-    student_school_id = forms.CharField(8)
-    school_name = forms.CharField(8)
+    student_school_id = forms.CharField()
+    school_name = forms.CharField()
 
     class Meta:
         model = Student
         fields = ['school_id','school_name']
 
 class OfficialRegistrationForm(forms.ModelForm):
-    state = forms.CharField(14)
+    state = forms.CharField()
     political_party = forms.ChoiceField(
         choices = [],
         required = True, 
