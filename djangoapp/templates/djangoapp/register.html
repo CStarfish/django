@@ -6,11 +6,122 @@
     <h2>Register</h2>
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+        <div class="container">
+            <ul>Username {{ form.username }}</ul>
+            <!-- Should never trigger unless empty field -->
+            {% if form.username.errors %}
+                <ul class="errorlist">
+                    {% for error in form.username.errors %}
+                        <li style="color: red;">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <ul>First name {{ form.first_name }}</ul>
+            <!-- Should never trigger unless empty field -->
+            {% if form.first_name.errors %}
+                <ul class="errorlist">
+                    {% for error in form.first_name.errors %}
+                        <li style="color: red;">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <ul>Last name {{ form.last_name }}</ul>
+            <!-- Should never trigger unless empty field -->
+            {% if form.last_name.errors %}
+                <ul class="errorlist">
+                    {% for error in form.last_name.errors %}
+                        <li style="color: red;">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <ul>Email: {{ form.email }}</ul>
+            <!-- Simply checks if email has an error (ex: email already used) and displays it on webpage -->
+            {% if form.email.errors %}
+                <ul class="errorlist">
+                    {% for error in form.email.errors %}
+                        <li style="color: red;">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <ul>Date Of Birth: {{ form.date_of_birth }}</ul>
+            <!-- Should never trigger unless empty field -->
+            {% if form.date_of_birth.errors %}
+                <ul class="errorlist">
+                    {% for error in form.date_of_birth.errors %}
+                        <li style="color: red;">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <ul>User Type: {{ form.user_type }}</ul>
+            <!-- Should never have error -->
+
+            <ul>Password: {{ form.password1 }}</ul>
+            <!-- displays error with password if password isn't valid-->
+            {% if form.password1.errors %}
+                <ul class="errorlist">
+                    {% for error in form.password1.errors %}
+                        <li style="color: red;">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <ul>Confirm Password: {{ form.password2 }}</ul>
+            <!-- displays error with password if passwords don't match-->
+            {% if form.password2.errors %}
+                <ul class="errorlist">
+                    {% for error in form.password2.errors %}
+                        <li style="color: red;">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <div id="student_field" style="display:none;">
+                <ul>Student ID: {{ form.student_id }}</ul>
+                <!-- Shouldn't ideally trigger unless empty field -->
+                {% if form.student_id.errors %}
+                <ul class="errorlist">
+                    {% for error in form.student_id.errors %}
+                        <li style="color: red;">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                <ul>School Name: {{ form.school_name}}</ul>
+                <!-- Shouldn't ideally trigger unless empty field -->
+                {% if form.school_name.errors %}
+                <ul class="errorlist">
+                    {% for error in form.school_name.errors %}
+                        <li style="color: red;">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
         <button type="submit">Register</button>
-    </form>
+    </form> 
     <div class="login-redirect">
         <a href="{% url 'login' %}" class="register_button">Back to login</a>
     </div>
 </div>
+
+<script type="text/javascript">
+    const userTypeField = document.getElementById('id_user_type');
+    const studentField = document.getElementById('student_field');
+  
+    function toggleStudentFields() {
+      if (userTypeField.value === 'student') {
+        studentField.style.display = 'block';
+      } else {
+        studentField.style.display = 'none';
+      }
+    }
+  
+    userTypeField.addEventListener('change', toggleStudentFields);
+    toggleStudentFields();  // Call on page load to check initial state
+</script>
 {% endblock %}

@@ -1,13 +1,104 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser
 
 #import your models here
-class User(AbstractUser):
+class UserManager(BaseUserManager):
+    def create_user(self, first_name, last_name, username, email, date_of_birth, password=None):
+        """
+        Creates and saves a User with the given email, date of
+        birth and password.
+        """
+        if not email:
+            raise ValueError('Users must have an email address')
+
+        user = self.model(
+            first_name = first_name,
+            last_name = last_name,
+            username = username,
+            email = self.normalize_email(email),
+            date_of_birth = date_of_birth,
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+    
+    def create_superuser(self, first_name, last_name, username, email, date_of_birth, password=None):
+        """
+        Creates and saves a superuser with the given email, date of
+        birth and password.
+        """
+        user = self.create_user(
+            first_name,
+            last_name,
+            username,
+            email,
+            password,
+            date_of_birth,
+        )
+        user.is_admin = True
+        user.save(using=self._db)
+        return user
+
+
+class User(AbstractBaseUser):
+    """
+    Custom User model, custom defined to use email as user login and
+    also requires a username, first name, last name, and date of birth.
+    """
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    username = models.CharField(max_length=30, unique=True)
+    email = models.EmailField(
+        verbose_name='email address',
+        max_length=255,
+        unique=True
+    )
+    date_of_birth = models.DateField()
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
     is_student = models.BooleanField(default=False)
     is_official = models.BooleanField(default=False)
 
+    objects = UserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'username', 'date_of_birth']
+
     class Meta:
         db_table = 'User'
+
+    def __str__(self):
+        return self.email
+
+    def has_perm(self, perm, obj=None):
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        return True
+
+    def has_module_perms(self, app_label):
+        "Does the user have permissions to view the app `app_label`?"
+        # Simplest possible answer: Yes, always
+        return True
+    
+    @property
+    def is_staff(self):
+        "Is the user a member of staff?"
+        # Simplest possible answer: All admins are staff
+        return self.is_admin
+    
+    @property
+    def is_a_student(self):
+        "Is the user a student?"
+        return self.is_student
+    
+    @property
+    def is_a_official(self):
+        "Is the user an official?"
+        return self.is_official
+
 
 class PoliticalParty(models.Model):
     political_party_id = models.AutoField(primary_key = True)
@@ -19,7 +110,8 @@ class PoliticalParty(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+
 class Profile(models.Model):
     user = models.OneToOneField(
         User,
@@ -42,13 +134,14 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username}'s profile"
 
+
 class Student(models.Model):
     user = models.OneToOneField(
         User,
         on_delete = models.CASCADE,
         primary_key = True
     )
-    school_id = models.CharField(max_length = 8, null = True, blank = True)
+    student_id = models.CharField(max_length = 8, null = True, blank = True)
     school_name = models.CharField(max_length = 45, null = True, blank = True)
 
     class Meta:
@@ -56,6 +149,7 @@ class Student(models.Model):
 
     def __str__(self):
         return f"Student: {self.user}"
+
 
 class Official(models.Model):
     user = models.OneToOneField(
@@ -70,6 +164,7 @@ class Official(models.Model):
 
     def __str__(self):
         return f"Official: {self.user}"
+
 
 class Candidate(models.Model):
     candidate_id = models.AutoField(primary_key = True)
@@ -86,6 +181,7 @@ class Candidate(models.Model):
     def __str__(self):
         return f"Candidate: {self.official}"
 
+
 class Policy(models.Model):
     policy_id = models.AutoField(primary_key = True)
     candidate = models.ForeignKey(
@@ -101,6 +197,7 @@ class Policy(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Event(models.Model):
     event_id = models.AutoField(primary_key = True)
@@ -121,6 +218,7 @@ class Event(models.Model):
     def __str__(self):
         return self.name or f"Event {self.event_id}"
 
+
 class ElectionOffice(models.Model):
     election_office_id = models.AutoField(primary_key = True)
     user = models.ForeignKey(
@@ -135,6 +233,7 @@ class ElectionOffice(models.Model):
 
     def __str__(self):
         return self.location or f"Election Office {self.election_office_id}"
+
 
 class Rating(models.Model):
     rating_id = models.AutoField(primary_key = True)
@@ -156,6 +255,7 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"Rating {self.rating} by {self.user} for {self.candidate}"
+
 
 class Messages(models.Model):
     message_id = models.AutoField(primary_key = True)
