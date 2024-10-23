@@ -4,6 +4,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
+from djangoapp.models import Student, Official
+
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
@@ -17,6 +19,26 @@ class RegistrationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+    
+class StudentRegistrationForm(forms.ModelForm):
+    student_school_id = forms.CharField(8)
+    school_name = forms.CharField(8)
+
+    class Meta:
+        model = Student
+        fields = ['school_id','school_name']
+
+class OfficialRegistrationForm(forms.ModelForm):
+    state = forms.CharField(14)
+    political_party = forms.ChoiceField(
+        choices = [],
+        required = True, 
+        widget = forms.Select(attrs = {'id': 'party'})
+    )
+
+    class Meta:
+        model = Official
+        fields = ['state']
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(

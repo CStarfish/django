@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
 from djangoapp import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', RedirectView.as_view(url='home/', permanent=True)),
@@ -29,4 +31,4 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('register/', views.register_view, name='register'),
     path('profile/<int:user_id>', views.profile_view, name='profile')
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

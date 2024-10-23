@@ -1,7 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
 #import your models here
+class User(AbstractUser):
+    is_student = models.BooleanField(default=False)
+    is_official = models.BooleanField(default=False)
 
 class PoliticalParty(models.Model):
     political_party_id = models.AutoField(primary_key = True)
@@ -27,6 +30,8 @@ class Profile(models.Model):
         blank = True,
         related_name = 'members'
     )
+    avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
+    bio = models.TextField(default = '')
 
     class Meta:
         db_table = 'Profile'
@@ -35,13 +40,13 @@ class Profile(models.Model):
         return f"{self.user.username}'s profile"
 
 class Student(models.Model):
-    student_id = models.AutoField(primary_key = True)
     user = models.OneToOneField(
         User,
         on_delete = models.CASCADE,
-        related_name = 'student'
+        primary_key = True
     )
-    school_id = models.CharField(max_length = 45, null = True, blank = True)
+    school_id = models.CharField(max_length = 8, null = False, blank = False)
+    school_name = models.CharField(max_length = 45, null = False, blank = False)
 
     class Meta:
         db_table = 'Student'
@@ -50,11 +55,10 @@ class Student(models.Model):
         return f"Student: {self.user}"
 
 class Official(models.Model):
-    official_id = models.AutoField(primary_key = True)
     user = models.OneToOneField(
         User,
         on_delete = models.CASCADE,
-        related_name='official'
+        primary_key = True
     )
     state = models.CharField(max_length = 45)
 
@@ -71,6 +75,7 @@ class Candidate(models.Model):
         on_delete = models.DO_NOTHING,
         related_name ='candidate'
     )
+    campaign_details = models.TextField(default = '')
 
     class Meta:
         db_table = 'Candidate'
