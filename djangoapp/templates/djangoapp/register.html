@@ -80,6 +80,16 @@
                 </ul>
             {% endif %}
 
+            <ul>Political party: {{ form.political_party }} (General and student accounts don't need to pick this right now.)</ul>
+            <!-- displays error with password if passwords don't match-->
+            {% if form.political_party.errors %}
+                <ul class="errorlist">
+                    {% for error in form.political_party.errors %}
+                        <li style="color: red;">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
             <!-- Fields for student registration -->
             <div id="student_field" style="display:none;">
                 <ul>Student ID: {{ form.student_id }}</ul>
@@ -105,7 +115,15 @@
 
             <!-- Fields for official registration -->
             <div id="official_field" style="display:none;">
-                <ul></ul>
+                <ul>State: {{ form.state }}</ul>
+                <!-- Shouldn't ideally trigger unless empty field -->
+                {% if form.state.errors %}
+                <ul class="errorlist">
+                    {% for error in form.state.errors %}
+                        <li style="color: red;">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             </div>
         </div>
         <button type="submit">Register</button>

@@ -3,7 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from django.contrib.auth.forms import UserCreationForm
 
-from djangoapp.models import Student, Official, User
+from djangoapp.models import Student, Official, User, PoliticalParty
 
 
 class RegistrationForm(UserCreationForm):
@@ -15,10 +15,16 @@ class RegistrationForm(UserCreationForm):
         required=True)
     student_id = forms.CharField(required=False)
     school_name = forms.CharField(required=False)
+    political_party = forms.ModelChoiceField(
+        queryset=PoliticalParty.objects.all(),
+        empty_label="None",
+        required=False
+    )
+    state = forms.CharField(required=False)
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'date_of_birth', 'user_type','password1', 'password2']
+        fields = ['first_name', 'last_name', 'username', 'email', 'date_of_birth', 'political_party', 'user_type','password1', 'password2']
     
     def clean(self):
         cleaned_data = super().clean()
@@ -33,6 +39,14 @@ class RegistrationForm(UserCreationForm):
             if not school_name:
                 self.add_error('school_name', 'This field is required for students.')
 
+        if user_type == 'official':
+            state = cleaned_data.get('state')
+            political_party = cleaned_data.get('political_party')
+            if not state:
+                self.add_error('state', 'This field is required for officials.')
+            if political_party is None:
+                self.add_error('political_party', 'Officials must specify a political party.')
+
     def save(self, commit=True):
         user = super(RegistrationForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
@@ -40,6 +54,8 @@ class RegistrationForm(UserCreationForm):
         
         if user_type == 'student':
             user.is_student = True
+        elif user_type == 'official':
+            user.is_official = True
 
         if commit:
             user.save()
@@ -47,12 +63,20 @@ class RegistrationForm(UserCreationForm):
         # Handle student
         if user.is_student:
             student = Student(
-                user=user, 
-                student_id=self.cleaned_data.get('student_id'),
-                school_name=self.cleaned_data.get('school_name')
+                user = user, 
+                student_id = self.cleaned_data.get('student_id'),
+                school_name = self.cleaned_data.get('school_name')
             )
             if commit:
                 student.save()
+        # Handle official
+        elif user.is_official:
+            official = Official(
+                user = user, 
+                state = self.cleaned_data.get('state')
+            )
+            if commit:
+                official.save()
 
         return user
 
