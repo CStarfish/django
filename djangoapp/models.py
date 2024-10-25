@@ -1,9 +1,23 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser
 
 #import your models here
+class PoliticalParty(models.Model):
+    political_party_id = models.AutoField(primary_key = True)
+    name = models.CharField(max_length = 45)
+    member_count = models.IntegerField(null = True, blank = True)
+
+    class Meta:
+        db_table = 'Political party'
+
+    def __str__(self):
+        return self.name
+
+
+
 class UserManager(BaseUserManager):
     def create_user(self, first_name, last_name, username, email, date_of_birth, password=None):
         """
@@ -61,6 +75,13 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     is_student = models.BooleanField(default=False)
     is_official = models.BooleanField(default=False)
+    political_party = models.ForeignKey(
+        PoliticalParty,
+        on_delete = models.DO_NOTHING,
+        null = True,
+        blank = True,
+        related_name = 'members'
+    )
 
     objects = UserManager()
 
@@ -100,30 +121,11 @@ class User(AbstractBaseUser):
         return self.is_official
 
 
-class PoliticalParty(models.Model):
-    political_party_id = models.AutoField(primary_key = True)
-    name = models.CharField(max_length = 45)
-    member_count = models.IntegerField(null = True, blank = True)
-
-    class Meta:
-        db_table = 'Political party'
-
-    def __str__(self):
-        return self.name
-
-
 class Profile(models.Model):
     user = models.OneToOneField(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete = models.CASCADE,
         related_name='profile'
-    )
-    political_party = models.ForeignKey(
-        PoliticalParty,
-        on_delete = models.DO_NOTHING,
-        null = True,
-        blank = True,
-        related_name = 'members'
     )
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
     bio = models.TextField(default = '')
@@ -137,7 +139,7 @@ class Profile(models.Model):
 
 class Student(models.Model):
     user = models.OneToOneField(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete = models.CASCADE,
         primary_key = True
     )
@@ -153,7 +155,7 @@ class Student(models.Model):
 
 class Official(models.Model):
     user = models.OneToOneField(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete = models.CASCADE,
         primary_key = True
     )
@@ -167,11 +169,10 @@ class Official(models.Model):
 
 
 class Candidate(models.Model):
-    candidate_id = models.AutoField(primary_key = True)
-    official = models.OneToOneField(
+    user = models.OneToOneField(
         Official,
         on_delete = models.DO_NOTHING,
-        related_name ='candidate'
+        primary_key = True
     )
     campaign_details = models.TextField(default = '')
 

@@ -80,6 +80,7 @@
                 </ul>
             {% endif %}
 
+            <!-- Fields for student registration -->
             <div id="student_field" style="display:none;">
                 <ul>Student ID: {{ form.student_id }}</ul>
                 <!-- Shouldn't ideally trigger unless empty field -->
@@ -101,6 +102,11 @@
                 </ul>
                 {% endif %}
             </div>
+
+            <!-- Fields for official registration -->
+            <div id="official_field" style="display:none;">
+                <ul></ul>
+            </div>
         </div>
         <button type="submit">Register</button>
     </form> 
@@ -112,16 +118,28 @@
 <script type="text/javascript">
     const userTypeField = document.getElementById('id_user_type');
     const studentField = document.getElementById('student_field');
+    const officialField = document.getElementById('official_field');
   
     function toggleStudentFields() {
-      if (userTypeField.value === 'student') {
-        studentField.style.display = 'block';
-      } else {
-        studentField.style.display = 'none';
-      }
+        if (userTypeField.value === 'student') {
+            studentField.style.display = 'block';
+        } 
+        else {
+            studentField.style.display = 'none';
+        }
+    }
+
+    function toggleOfficialFields() {
+        if (userTypeField.value === 'official') {
+            officialField.style.display = 'block';
+        } 
+        else {
+            officialField.style.display = 'none';
+        }
     }
   
     userTypeField.addEventListener('change', toggleStudentFields);
+    userTypeField.addEventListener('change', toggleOfficialFields);
     toggleStudentFields();  // Call on page load to check initial state
 </script>
 {% endblock %}
