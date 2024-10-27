@@ -3,7 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from django.contrib.auth.forms import UserCreationForm
 
-from djangoapp.models import Student, Official, User, PoliticalParty
+from djangoapp.models import (Student, Official, User, PoliticalParty, Profile)
 
 
 class RegistrationForm(UserCreationForm):
@@ -93,8 +93,26 @@ class LoginForm(AuthenticationForm):
     )
 
 
+class UpdateUserForm(forms.ModelForm):
+    email = forms.EmailField(required = False)
+    username = forms.CharField(required = False)
+    first_name = forms.CharField(required = False)
+    last_name = forms.CharField(required = False)
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'first_name', 'last_name']
+
+
+class UpdateProfileForm(forms.ModelForm):
+    profile_picture = forms.ImageField(widget = forms.FileInput(attrs={'class': 'form-control-file'}))
+    bio = forms.CharField(widget=forms.Textarea(attrs = {'class': 'form-control', 'rows': 5}))
+    class Meta:
+        model = Profile
+        fields = ['profile_picture', 'bio']
+
+
 class SearchForm(forms.Form):
-    search = forms.CharField(
+    query = forms.CharField(
         required = False, 
         widget = forms.TextInput(attrs = {
             'id': 'search', 

@@ -3,9 +3,33 @@
 {% load static %}
 {% block content %}
 <div class="jumbotron">
-    <h1>{{ user_profile.username }}'s Profile</h1>
-    <p>Email: {{ user_profile.email }}</p>
-    <p>First name: {{ user_profile.first_name }}</p>
-    <p>Last name: {{ user_profile.last_name }}</p>  
+    <h1>{{ user.username }}'s Profile</h1>
+    {% if user.is_student %}
+        <p>Student User</p>
+    {% elif user.is_official %}
+        <p>Official User</p>
+    {% else %}
+        <p>General User</p>
+    {% endif %}
+    <div class="centered-div">
+        <img class="rounded-circle account-img" src="{{ user.profile.profile_picture.url }} " style="cursor: pointer;"/>
+        <p>{{ user.profile.bio }}</p>
+    </div>
+    
+    <form method='POST' enctype="multipart/form-data">
+        {% csrf_token %}
+        <P>Username: {{ user.username}} Change username: {{ user_form.username }}</P>
+        <p>Email: {{ user.email }} Change email: {{ user_form.email }}</p>
+        <p>First name: {{ user.first_name }} Change first name: {{ user_form.first_name }}</p>
+        <p>Last name: {{ user.last_name }} Change last name: {{ user_form.last_name }}</p>
+        <div class="form-group">
+            <a href="#">Change Password</a>
+            <hr>
+            <label class="small mb-1">Change Profile Picture:</label>
+            {{ profile_form.profile_picture }}
+        </div>
+        <label class="small mb-1">Bio:</label> {{ profile_form.bio }}
+        <button type="submit">Save Changes</button>
+    </form>
 </div>
 {% endblock %}

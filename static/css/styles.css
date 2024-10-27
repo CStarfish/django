@@ -73,12 +73,21 @@ main {
 }
 
 .search {
-    max-width: 600px;
+    width: 70%;
     margin: 0 auto;
-    padding: 20px;
-    background-color: #fff;
+    margin-left: 20px;
+    margin-right: 20px;
+
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+}
+
+.search form {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .search input[type="text"] {
@@ -141,4 +150,9 @@ footer ul li a {
 
 footer ul li a:hover {
     text-decoration: underline;
+}
+
+.centered-div {
+    width: 150px;          /* Set a width */
+    margin: 0 auto;        /* Center horizontally */
 }

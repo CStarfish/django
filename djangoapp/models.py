@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser
+from PIL import Image, ImageOps
 
 #import your models here
 class PoliticalParty(models.Model):
@@ -32,7 +33,7 @@ class UserManager(BaseUserManager):
             last_name = last_name,
             username = username,
             email = self.normalize_email(email),
-            date_of_birth = date_of_birth,
+            date_of_birth = date_of_birth
         )
 
         user.set_password(password)
@@ -49,8 +50,8 @@ class UserManager(BaseUserManager):
             last_name,
             username,
             email,
-            password,
             date_of_birth,
+            password
         )
         user.is_admin = True
         user.save(using=self._db)
@@ -127,7 +128,7 @@ class Profile(models.Model):
         on_delete = models.CASCADE,
         related_name='profile'
     )
-    avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
+    profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images')
     bio = models.TextField(default = '')
 
     class Meta:
@@ -135,6 +136,24 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s profile"
+    
+    # resizing images
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.profile_picture.path)
+
+        if img.height > 150 or img.width > 150:
+            new_img = (150, 150)
+            img.thumbnail(new_img)
+            img.save(self.profile_picture.path, format='JPEG')  # Specify the format if needed
+        elif img.height < 150 or img.width < 150:
+            img = Image.open(self.profile_picture.path)
+            img.thumbnail((150, 150), Image.LANCZOS)
+            new_img = Image.new('RGB', (150, 150), (255, 255, 255))  # White background
+            new_img.paste(img, ((150 - img.width) // 2, (150 - img.height) // 2))  # Center the image
+            new_img.save(self.profile_picture.path, format='JPEG')  # Specify the format if needed
+
 
 
 class Student(models.Model):

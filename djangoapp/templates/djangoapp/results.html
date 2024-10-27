@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Result List</title>
-</head>
-<body>
+{% extends "djangoapp/base.html" %}
+{% block title %} Results Page {% endblock title%}
+{% load static %}
+{% block content %}
+
     {% if not query == '' %}
         <h1>Results for {{ query }}</h1>
     {% endif %}
@@ -16,7 +15,9 @@
             <strong>Users:</strong>
             <ul>
                 {% for user in users.all %}
-                    <li>{{ user.firstname }} {{ user.lastname }} - {{ user.email }}
+                    <div class="container">
+                        <a href="{% url 'profile' user_id=user.id %}">{{ user.firstname }} {{ user.lastname }} - {{ user.email }}</a></li>
+                    </div>
                 {% empty %}
                     <li>No users match.</li>
                 {% endfor %}
@@ -63,5 +64,5 @@
             <li>No results found...</li>
         {% endif %}
     </ul>
-</body>
-</html>
+
+{% endblock %}
