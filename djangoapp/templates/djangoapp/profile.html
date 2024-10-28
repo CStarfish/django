@@ -7,6 +7,8 @@
     <h1>{{ user.username }}'s Profile</h1>
     {% if user.is_student %}
         <p>Student User</p>
+    {% elif user.is_candidate %}
+        <p>Candidate</p>
     {% elif user.is_official %}
         <p>Official User</p>
     {% else %}
@@ -33,6 +35,9 @@
         <button type="submit">Save Changes</button> 
         {% if user.is_official and not user.is_candidate %}
             <a href="{% url 'candidacy' %}">Apply for Candidacy</a>
+        {% endif %}
+        <!-- Check if user is candidate and allow to make policies and events -->
+        {% if user.is_candidate %}
         {% endif %}
     </form>
 </div>

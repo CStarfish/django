@@ -208,7 +208,9 @@ class CandidacyView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         candidacy = form.save(commit=False)
-        candidacy.official.user = self.request.user
+
+        official = Official.objects.get(user=self.request.user)
+        candidacy.user = official
         candidacy.save()
         messages.success(self.request, "Your candidacy application has been submitted for approval.")
         return super().form_valid(form)

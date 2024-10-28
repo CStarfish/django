@@ -76,6 +76,7 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     is_student = models.BooleanField(default=False)
     is_official = models.BooleanField(default=False)
+    is_candidate = models.BooleanField(default=False)
     political_party = models.ForeignKey(
         PoliticalParty,
         on_delete = models.DO_NOTHING,

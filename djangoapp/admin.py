@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 
-from djangoapp.models import User
+from djangoapp.models import User, Candidate
 
 
 class UserCreationForm(forms.ModelForm):
@@ -82,14 +82,25 @@ class CandidacyAdmin(admin.ModelAdmin):
     
     actions = ['approve_candidates']
 
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        # Check if the candidate is being approved and set is_candidate variable in user to true if so
+        if obj.approved:
+            user = obj.user.user
+            user.is_candidate = obj.approved
+            user.save()
+
     def approve_candidates(self, request, queryset):
         queryset.update(approved=True)
         self.message_user(request, "Selected candidacies have been approved.")
     approve_candidates.short_description = "Approve selected candidacies"
+    
 
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
+admin.site.register(Candidate, CandidacyAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
