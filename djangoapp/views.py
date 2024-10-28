@@ -7,7 +7,7 @@ import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
 
-from .models import (User, Profile, Policy, Event, PoliticalParty)
+from .models import (User, Profile, Policy, Event, PoliticalParty, Candidate)
 
 from .forms import (SearchForm, LoginForm, RegistrationForm, UpdateUserForm, UpdateProfileForm)
 
@@ -200,8 +200,8 @@ def policy_detail(request, policy_id):
     policy = get_object_or_404(Policy, policy_id=policy_id)
     return render(request, 'djangoapp/policy_detail.html', {'policy' : policy})
 
-def candidate_detail(request, candidate_id):
-    candidate = get_object_or_404(candidate, candidate_id=candidate_id)
+def candidate_detail(request, user_id):
+    candidate = get_object_or_404(Candidate, user_id=user_id)
     policies = Policy.objects.filter(candidate=candidate)
     events = Event.objects.filter(candidate=candidate)
     

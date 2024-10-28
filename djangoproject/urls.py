@@ -32,5 +32,5 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),
     path('profile/<int:user_id>', views.profile_view, name='profile'),
     path('policy/<int:policy_id>', views.policy_detail, name='policy_detail'),
-    path('candidate/<int:candidate_id>', views.candidate_detail, name='candidate_detail')
+    path('candidate/<int:user_id>', views.candidate_detail, name='candidate_detail')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

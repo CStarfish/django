@@ -5,7 +5,7 @@
 <div class = "container">
     <h1>{{ policy.name }}</h1>
     <p><strong>Provided by:</strong> 
-        <a href="{% url 'candidate_detail' policy.candidate_id %}">
+        <a href="{% url 'candidate_detail' policy.candidate.user.user.id %}">
         {{ policy.candidate.user.user.first_name }} {{ policy.candidate.user.user.last_name }}
         </a>
     </p>

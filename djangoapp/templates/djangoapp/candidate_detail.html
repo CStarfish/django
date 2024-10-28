@@ -9,7 +9,7 @@
     <h2> Policies </h2>
     <ul>
         {% for policy in policies%}
-            <li><a href="% url 'policy_detail' policy.id %"> {{ policy.name }}</li>
+            <li> {{ policy.name }}</li>
         {% empty %}
             <p>No Policies Found</p>
         {% endfor %}
@@ -24,4 +24,6 @@
         {% endfor %}
     </ul>
 
+
 </div>
+{% endblock %}
