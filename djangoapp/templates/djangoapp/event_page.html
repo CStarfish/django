@@ -1,0 +1,16 @@
+{% extends "djangoapp/base.html" %}
+{% block title %} Event {% endblock%}
+
+{% block content%}
+<div class = "container">
+    <h1>{{ event.name }}</h1>
+    <p><strong>Created by:</strong> 
+        <a href="{% url 'profile_page' policy.official.user.id %}">
+        {{ event.official.user.first_name }} {{ event.official.user.last_name }}
+        </a>
+    </p>
+    <p><strong>{{ event.location }}</strong></p>
+    <p>Starts on {{ event.start }}, Ends on {{ event.end }}</p>
+    <p>{{ event.desc }}</p>
+</div>
+{% endblock %}

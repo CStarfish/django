@@ -124,7 +124,7 @@ class SearchForm(forms.Form):
         ('', 'All'),
         ('events', 'Events'),
         ('policies', 'Policies'),
-        ('political party', 'Political Party'),
+        ('candidates', 'Candidates'),
     ]
     
     filter1 = forms.ChoiceField(

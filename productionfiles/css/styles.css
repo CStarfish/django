@@ -156,3 +156,28 @@ footer ul li a:hover {
     width: 150px;          /* Set a width */
     margin: 0 auto;        /* Center horizontally */
 }
+
+/* for error messages */
+.message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    padding: 15px;
+    border-radius: 5px;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    display: none;
+}
+
+/* Success message */
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* Error message */
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}

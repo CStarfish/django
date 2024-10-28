@@ -16,7 +16,15 @@
             <ul>
                 {% for user in users.all %}
                     <div class="container">
-                        <a href="{% url 'profile' user_id=user.id %}">{{ user.firstname }} {{ user.lastname }} - {{ user.email }}</a></li>
+                        <li><a href="{% url 'profile_page' user_id=user.id %}">{{ user.first_name }} {{ user.last_name }}</a></li>
+                        {% if user.is_candidate %}
+                            <ul>Candidate</ul>
+                        {% elif user.is_official %}
+                            <ul>Official</ul>
+                        {% elif user.is_student %}
+                            <ul>Student</ul>
+                        {% endif %}
+                        <ul>Email: {{ user.email }}</ul>
                     </div>
                 {% empty %}
                     <li>No users match.</li>
@@ -29,7 +37,7 @@
             <strong>Policies:</strong>
             <ul>
                 {% for policy in policies.all %}
-                    <li><a href="{% url 'profile' user_id=user.id %}">{{ user.firstname }} {{ user.lastname }} - {{ user.email }}</a></li>
+                    <li><a href="{% url 'policy_page' policy.policy_id %}">{{ policy.name }} {{ policy.desc }}</a></li>
                 {% empty %}
                     <li>No policies match.</li>
                 {% endfor %}
@@ -48,8 +56,8 @@
             </ul>
         {% endif %}
 
-        {% if political_party.exists %}
-            <!-- Display Political Parties -->
+        <!-- {% if political_party.exists %}
+            Display Political Parties
             <strong>Political Parties:</strong>
             <ul>
                 {% for party in political_party.all %}
@@ -58,9 +66,9 @@
                     <li>No political parties match.</li>
                 {% endfor %}
             </ul>
-        {% endif %}
+        {% endif %}-->
 
-        {% if not users.exists and not policies.exists and not events.exists and not political_party.exists %}
+        {% if not users.exists and not policies.exists and not events.exists %}
             <li>No results found...</li>
         {% endif %}
     </ul>

@@ -1,0 +1,52 @@
+{% extends "djangoapp/base.html"%}
+{% block title %}{{ user.first_name}}'s Profile {% endblock%}
+{% block content %}
+<div class="container">
+    <h1>{{ user.first_name }} {{ user.last_name }}'s Profile</h1>
+    {% if user.is_student %}
+        <p>Student User</p>
+    {% elif user.is_candidate %}
+        <p>Candidate</p>
+    {% elif user.is_official %}
+        <p>Official User</p>
+    {% else %}
+        <p>General User</p>
+    {% endif %}
+    <div class="centered-div">
+        <img class="rounded-circle account-img" src="{{ user.profile.profile_picture.url }} " style="cursor: pointer;"/>
+        <p>{{ user.profile.bio }}</p>
+    </div>
+    
+    <h1>{{ user.first_name}} {{ user.last_name}}</h1>
+    {% if user.is_candidate %}
+        <p><strong>Campaign Name and Details:</strong></p>
+        <p>{{ candidate.campaign_name}}: {{ candidate.campaign_details}}</p>
+    {% endif %}
+
+    {% if user.is_official %}
+        <h2> Policies </h2>
+        <ul>
+            {% for policy in policies %}
+                <li><a href="{% url 'policy_page' policy.policy_id %}"> {{ policy.name }} </a></li>
+                <ul>Description: {{ policy.desc }}</ul>
+            {% empty %}
+                <p>No Policies Found</p>
+            {% endfor %}
+        </ul>
+
+        <h2> Events </h2>
+        <ul>
+        {% for event in events %}
+            <li><a href="{% url 'event_page' event.event_id %}"> {{ event.name }} </a></li>
+            <ul> {{ event.location }} </ul>
+            <ul>Starts on: {{ event.start }}</ul>
+            <ul>Ends on: {{ event.end }} </ul>
+            <ul>Description: {{ event.desc }} </ul>
+        {% empty %}
+            <p>No events found</p>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+</div>
+{% endblock %}

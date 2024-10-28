@@ -1,10 +1,9 @@
 {% extends "djangoapp/base.html" %}
 {% block title %} Profile Page {% endblock title%}
-{% load static %}
 {% block content %}
 <div class="jumbotron">
     <h1>Page Preview</h1>
-    <h1>{{ user.username }}'s Profile</h1>
+    <h1>{{ user.first_name }} {{ user.last_name }}'s Profile</h1>
     {% if user.is_student %}
         <p>Student User</p>
     {% elif user.is_candidate %}
@@ -38,8 +37,8 @@
         {% endif %}
         <!-- Check if user is candidate and allow to make policies and events -->
         {% if user.is_official %}
-        <a href="{% url 'policy_creation' %}">Create Policy</a>
-        <a href="{% url 'event_creation' %}">Create Event</a>
+            <a href="{% url 'policy_creation' %}">Create Policy</a>
+            <a href="{% url 'event_creation' %}">Create Event</a>
         {% endif %}
     </form>
 </div>

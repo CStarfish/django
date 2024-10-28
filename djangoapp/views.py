@@ -114,41 +114,50 @@ class ProfileView(LoginRequiredMixin, View):
             })
 
 
-#Search bar page
-
+#Search engine logic
 class SearchView(FormView):
     template_name = 'djangoapp/results.html'
     form_class = SearchForm
 
-    def form_valid(self, form):
-        query = form.cleaned_data.get('query')
-        filter1 = form.cleaned_data.get('filter1')
+    def get(self, request):
+        query = self.request.GET.get('query')
+        filter1 = self.request.GET.get('filter1')
 
         print(f"Query: {query}")
 
         users = None
         policies = None
         events = None
-        political_party = None
         match filter1:
             case 'policies':
-                policies = Policy.objects.filter(name__icontains=query) if query else Policy.objects.all()
+                if query:
+                    policies = Policy.objects.filter(name__icontains=query)
+                else:
+                    policies = Policy.objects.all()
             case 'events':
-                events = Event.objects.filter(name__icontains=query) if query else Event.objects.all()
-            case 'political party':
-                political_party = PoliticalParty.objects.filter(name__icontains=query) if query else PoliticalParty.objects.all()
-            case _:
-                users = User.objects.filter(official__user__firstname__icontains=query) if query else User.objects.all()
-                policies = Policy.objects.filter(name__icontains=query) if query else Policy.objects.all()
-                events = Event.objects.filter(name__icontains=query) if query else Event.objects.all()
-                political_party = PoliticalParty.objects.filter(name__icontains=query) if query else PoliticalParty.objects.all()
+                if query:
+                    events = Event.objects.filter(name__icontains=query)
+                else:
+                    events = Event.objects.all()
+            case 'candidates':
+                if query:
+                    users = Candidate.objects.filter(official__user__firstname__icontains=query)
+                else:
+                    users = Candidate.objects.all()
+            case _: # Default to full output of every record if no filter is selected
+                if query:
+                    users = User.objects.filter(official__user__first_name__icontains=query)
+                    policies = Policy.objects.filter(name__icontains=query)
+                    events = Event.objects.filter(name__icontains=query)
+                else:
+                    users = User.objects.all()
+                    policies = Policy.objects.all()
+                    events = Event.objects.all()
 
         return render(self.request, self.template_name, {
-            "form": form,
             "users": users,
             "policies": policies,
             "events": events,
-            "political_party": political_party,
             "query": query
         })
 
@@ -296,19 +305,38 @@ class EventCreationView(LoginRequiredMixin, FormView):
         return reverse_lazy('profile', args=[user_id])
 
 
+def PolicyPageView(request, policy_id):
+    policy = get_object_or_404(Policy, policy_id = policy_id)
+    return render(request, 'djangoapp/policy_page.html', {'policy': policy})
 
-def PolicyDetail(request, policy_id):
-    policy = get_object_or_404(Policy, policy_id=policy_id)
-    return render(request, 'djangoapp/policy_detail.html', {'policy' : policy})
+def EventPageView(request, event_id):
+    event = get_object_or_404(Event, event_id = event_id)
+    return render(request, 'djangoapp/event_page.html', {'event': event})
 
 
-def CandidateDetail(request, user_id):
-    official = get_object_or_404(Official, user_id=user_id)
-    policies = Policy.objects.filter(candidate=candidate)
-    events = Event.objects.filter(candidate=candidate)
-    
-    return render(request, 'djangoapp/candidate_detail.html',{
-        'official' : official,
-        'policies' : policies,
-        'events' : events
+def ProfilePageView(request, user_id):
+    user = get_object_or_404(User, id = user_id)
+    candidate = None
+    official = None
+    student = None
+    policies = None
+    events = None
+
+    if(user.is_candidate):
+        candidate = get_object_or_404(Candidate, user_id = user_id)
+    if(user.is_official):
+        official = get_object_or_404(Official, user_id = user_id)
+        policies = Policy.objects.filter(official__user__id = user_id)
+        events = Event.objects.filter(official__user__id = user_id)
+    if(user.is_student):
+        student = get_object_or_404(Student, user_id = user_id)
+        
+
+    return render(request, 'djangoapp/profile_page.html',{
+        'user' : user,
+        'candidate' : candidate,
+        'official': official,
+        'student': student,
+        'policies': policies,
+        'events': events
     })

@@ -1,11 +1,11 @@
 {% extends "djangoapp/base.html" %}
-{% block title %} Policies {% endblock%}
+{% block title %} Policy {% endblock%}
 
 {% block content%}
 <div class = "container">
     <h1>{{ policy.name }}</h1>
-    <p><strong>Provided by:</strong> 
-        <a href="{% url 'candidate_detail' policy.official.user.id %}">
+    <p><strong>Policy of:</strong> 
+        <a href="{% url 'profile_page' policy.official.user.id %}">
         {{ policy.official.user.first_name }} {{ policy.official.user.last_name }}
         </a>
     </p>
