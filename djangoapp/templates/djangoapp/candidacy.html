@@ -1,0 +1,39 @@
+{% extends "djangoapp/base.html" %}
+{% block title %} Home Page {% endblock title%}
+{% load static %}
+{% block content %}
+<form method="POST" action="{% url 'candidacy' %}">
+    {% csrf_token %}
+    <!-- Include error messages -->
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for field, errors in form.items %}
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <!-- Campaign Details -->
+    <fieldset>
+        <legend>Campaign Details</legend>
+        <div>
+            <p></p><label for="campaign_title">Campaign Title:</label></p>
+            {{ form.campaign_name }}
+        </div>
+        <div>
+            <p><label for="campaign_description">Campaign Description:</label></p>
+            {{ form.campaign_details }}
+        </div>
+    </fieldset>
+
+    <!-- Submit Button -->
+    <div>
+        <button type="submit">Submit Application</button>
+    </div>
+</form>
+</div>
+{% endblock %}

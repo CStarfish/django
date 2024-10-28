@@ -193,7 +193,10 @@ class Candidate(models.Model):
         on_delete = models.DO_NOTHING,
         primary_key = True
     )
+    campaign_name = models.TextField(default = '')
     campaign_details = models.TextField(default = '')
+    date_applied = models.DateTimeField(auto_now_add=True)
+    approved = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'Candidate'

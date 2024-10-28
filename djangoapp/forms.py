@@ -3,7 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from django.contrib.auth.forms import UserCreationForm
 
-from djangoapp.models import (Student, Official, User, PoliticalParty, Profile)
+from djangoapp.models import *
 
 
 class RegistrationForm(UserCreationForm):
@@ -132,3 +132,11 @@ class SearchForm(forms.Form):
         required = False, 
         widget = forms.Select(attrs = {'id': 'filter1'})
     )
+
+
+class CandidacyForm(forms.ModelForm):
+    campaign_name = forms.CharField()
+    campaign_details = forms.TextInput()
+    class Meta:
+        model = Candidate
+        fields = ['campaign_name', 'campaign_details']

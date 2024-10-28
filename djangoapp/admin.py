@@ -75,6 +75,19 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 
+class CandidacyAdmin(admin.ModelAdmin):
+    list_display = ('campaign_name', 'user', 'date_applied', 'approved')
+    list_filter = ('approved',)
+    search_fields = ('campaign_name', 'user__username')
+    
+    actions = ['approve_candidates']
+
+    def approve_candidates(self, request, queryset):
+        queryset.update(approved=True)
+        self.message_user(request, "Selected candidacies have been approved.")
+    approve_candidates.short_description = "Approve selected candidacies"
+
+
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
 # ... and, since we're not using Django's built-in permissions,
