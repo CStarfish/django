@@ -199,3 +199,14 @@ def results_view(request):
 def policy_detail(request, policy_id):
     policy = get_object_or_404(Policy, policy_id=policy_id)
     return render(request, 'djangoapp/policy_detail.html', {'policy' : policy})
+
+def candidate_detail(request, candidate_id):
+    candidate = get_object_or_404(candidate, candidate_id=candidate_id)
+    policies = Policy.objects.filter(candidate=candidate)
+    events = Event.objects.filter(candidate=candidate)
+    
+    return render(request, 'djangoapp/candidate_detail.html',{
+        'candidate' : candidate,
+        'policies' : policies,
+        'events' : events
+    })

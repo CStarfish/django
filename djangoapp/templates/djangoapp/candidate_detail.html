@@ -1,0 +1,27 @@
+{% extends "djangoapp/base.html"%}
+{% block title %}{{ candidate.user.user.first_name}}'s Profile {% endblock%}
+
+{% block content %}
+<div class="container">
+    <h1>{{ candidate.user.user.first_name}} {{ candidate.user.user.last_name}}</h1>
+    <p><strong>Campaign Details:</strong> {{ candate.campaign_details}}</p>
+
+    <h2> Policies </h2>
+    <ul>
+        {% for policy in policies%}
+            <li><a href="% url 'policy_detail' policy.id %"> {{ policy.name }}</li>
+        {% empty %}
+            <p>No Policies Found</p>
+        {% endfor %}
+    </ul>
+
+    <h2> Events </h2>
+    <ul>
+        {% for event in events %}
+            <li>{{ event.name }} - {{ event.location }}</li>
+        {% empty %}
+            <p>No events found</p>
+        {% endfor %}
+    </ul>
+
+</div>
