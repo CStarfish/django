@@ -1,0 +1,10 @@
+{% extends "djangoapp/base.html" %}
+{% block title %} Policies {% endblock%}
+
+{% block content%}
+<div class = "container">
+    <h1>{{ policy.name }}</h1>
+    <p><strong>Candidate: </strong> {{ policy.candidate.name}}</p>
+    <p>{{ policy.desc }}</p>
+</div>
+{% endblock %}

@@ -195,3 +195,7 @@ def results_view(request):
                                                       "political_party": political_party,
                                                       "query": query})
     #candidates = Candidate.objects.select_related('official_user')
+    
+def policy_detail(request, policy_id):
+    policy = get_object_or_404(Policy, policy_id=policy_id)
+    return render(request, 'djangoapp/policy_detail.html', {'policy' : policy})
