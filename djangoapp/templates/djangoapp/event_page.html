@@ -5,7 +5,7 @@
 <div class = "container">
     <h1>{{ event.name }}</h1>
     <p><strong>Created by:</strong> 
-        <a href="{% url 'profile_page' policy.official.user.id %}">
+        <a href="{% url 'profile_page' event.official.user.id %}">
         {{ event.official.user.first_name }} {{ event.official.user.last_name }}
         </a>
     </p>
