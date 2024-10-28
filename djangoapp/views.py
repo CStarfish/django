@@ -277,7 +277,7 @@ class PolicyCreationView(LoginRequiredMixin, FormView):
     
     def get_success_url(self):
         if hasattr(self, 'policy_id'):
-            return reverse_lazy('policy_detail', args=[self.policy_id])
+            return reverse_lazy('policy_page', args=[self.policy_id])
         return reverse_lazy('home')
     
 
@@ -298,6 +298,9 @@ class EventCreationView(LoginRequiredMixin, FormView):
         official = Official.objects.get(user=self.request.user)
         event.official = official
         event.save()
+
+        self.event_id = event.event_id
+
         messages.success(self.request, "Your event has been posted.")
         return super().form_valid(form)
 
@@ -306,8 +309,7 @@ class EventCreationView(LoginRequiredMixin, FormView):
         return super().form_invalid(form)
     
     def get_success_url(self):
-        user_id = self.request.user.id
-        return reverse_lazy('profile', args=[user_id])
+        return reverse_lazy('event_page', args=[self.event_id])
 
 
 def PolicyPageView(request, policy_id):
