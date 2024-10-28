@@ -98,9 +98,24 @@ class UpdateUserForm(forms.ModelForm):
     username = forms.CharField(required = False)
     first_name = forms.CharField(required = False)
     last_name = forms.CharField(required = False)
+    political_party = forms.ModelChoiceField(
+        queryset=PoliticalParty.objects.all(),
+        empty_label="None",
+        required=False
+    )
     class Meta:
         model = User
-        fields = ['email', 'username', 'first_name', 'last_name']
+        fields = ['email', 'username', 'first_name', 'last_name', 'political_party']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        user = self.instance
+
+        if user.is_official:
+            political_party = cleaned_data.get('political_party')
+
+            if political_party is None:
+                self.add_error('political_party', 'Officials must specify a political party.')
 
 
 class UpdateProfileForm(forms.ModelForm):

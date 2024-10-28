@@ -106,7 +106,12 @@ class ProfileView(LoginRequiredMixin, View):
             messages.success(request, 'Successful profile update.')
             return redirect('profile', user_id=user.id)
         else:
-            messages.error(request, "Failed profile update.")
+            error_messages = []
+            if not user_form.is_valid():
+                error_messages.append("User form has errors.")
+            if not profile_form.is_valid():
+                error_messages.append("Profile form has errors.")
+            messages.error(request, " ".join(error_messages))
             return render(request, self.template_name, {
                 'user': user,
                 'user_form': user_form,

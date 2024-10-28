@@ -12,6 +12,7 @@
     {% else %}
         <p>General User</p>
     {% endif %}
+    <p>Political Party: {{ user.political_party }}</p>
     <div class="centered-div">
         <img class="rounded-circle account-img" src="{{ user.profile.profile_picture.url }} " style="cursor: pointer;"/>
         <p>{{ user.profile.bio }}</p>

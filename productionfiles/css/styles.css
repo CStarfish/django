@@ -177,7 +177,7 @@ footer ul li a:hover {
 }
 
 /* Error message */
-.alert-danger {
+.alert-error {
     background-color: #f8d7da;
     color: #721c24;
 }
