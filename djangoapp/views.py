@@ -17,6 +17,7 @@ from django.views import View
 from django.views.generic import TemplateView, FormView
 
 from .models import *
+from .models import (User, Profile, Policy, Event, PoliticalParty, Candidate)
 
 from .forms import *
 
@@ -214,3 +215,18 @@ class CandidacyView(LoginRequiredMixin, FormView):
     def form_invalid(self, form):
         messages.error(self.request, "There was an error submitting your application.")
         return super().form_invalid(form)
+    
+def policy_detail(request, policy_id):
+    policy = get_object_or_404(Policy, policy_id=policy_id)
+    return render(request, 'djangoapp/policy_detail.html', {'policy' : policy})
+
+def candidate_detail(request, user_id):
+    candidate = get_object_or_404(Candidate, user_id=user_id)
+    policies = Policy.objects.filter(candidate=candidate)
+    events = Event.objects.filter(candidate=candidate)
+    
+    return render(request, 'djangoapp/candidate_detail.html',{
+        'candidate' : candidate,
+        'policies' : policies,
+        'events' : events
+    })

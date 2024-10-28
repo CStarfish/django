@@ -202,7 +202,7 @@ class Candidate(models.Model):
         db_table = 'Candidate'
 
     def __str__(self):
-        return f"Candidate: {self.official}"
+        return f"Candidate: {self.user.user.first_name} {self.user.user.last_name}"#f"Candidate: {self.official}"
 
 
 class Policy(models.Model):
