@@ -140,3 +140,21 @@ class CandidacyForm(forms.ModelForm):
     class Meta:
         model = Candidate
         fields = ['campaign_name', 'campaign_details']
+
+
+class PolicyCreationForm(forms.ModelForm):
+    name = forms.CharField()
+    desc = forms.TextInput()
+    class Meta:
+        model = Policy
+        fields = ['name', 'desc']
+
+class EventCreationForm(forms.ModelForm):
+    name = forms.CharField()
+    location = forms.CharField()
+    start = forms.DateTimeField()
+    end = forms.DateTimeField()
+    desc = forms.TextInput()
+    class Meta:
+        model = Event
+        fields = ['name', 'location', 'start', 'end', 'desc']

@@ -3,7 +3,7 @@
 {% load static %}
 {% block content %}
 <div class = 'container'>
-    <form method="POST" action="{% url 'candidacy' %}">
+    <form method="POST" action="{% url 'policy_creation' %}">
         {% csrf_token %}
         <!-- Include error messages -->
         {% if form.errors %}
@@ -20,18 +20,18 @@
 
         <!-- Campaign Details -->
         <fieldset>
-            <legend>Campaign Details</legend>
+            <legend>Create Policy</legend>
             <div>
-                <p></p><label for="campaign_title">Campaign Title:</label></p>
-                {{ form.campaign_name }}
+                <p></p><label for="policy_name">Policy Name:</label></p>
+                {{ form.name }}
             </div>
             <div>
-                <p><label for="campaign_description">Campaign Description:</label></p>
-                {{ form.campaign_details }}
+                <p><label for="policy_description">Campaign Description:</label></p>
+                {{ form.desc }}
             </div>
         </fieldset>
         <div>
-            <button type="submit">Submit Application</button>
+            <button type="submit">Create</button>
         </div>
 </form>
 </div>

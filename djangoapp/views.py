@@ -124,6 +124,8 @@ class SearchView(FormView):
         query = form.cleaned_data.get('query')
         filter1 = form.cleaned_data.get('filter1')
 
+        print(f"Query: {query}")
+
         users = None
         policies = None
         events = None
@@ -204,7 +206,13 @@ def ResultsView(request):
 class CandidacyView(LoginRequiredMixin, FormView):
     template_name = 'djangoapp/candidacy.html'
     form_class = CandidacyForm
-    success_url = reverse_lazy('home')
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the logged-in user is an official
+        if not hasattr(request.user, 'is_official'):
+            messages.error(request, "You do not have permission to access this page.")
+            return redirect('profile') 
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         candidacy = form.save(commit=False)
@@ -218,6 +226,75 @@ class CandidacyView(LoginRequiredMixin, FormView):
     def form_invalid(self, form):
         messages.error(self.request, "There was an error submitting your application.")
         return super().form_invalid(form)
+    
+    def get_success_url(self):
+        # Use the user id from the request to construct the success URL
+        user_id = self.request.user.id
+        return reverse_lazy('profile', args=[user_id])
+    
+
+class PolicyCreationView(LoginRequiredMixin, FormView):
+    template_name = 'djangoapp/policy_creation.html'
+    form_class = PolicyCreationForm
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the logged-in user is an official
+        if not hasattr(request.user, 'is_official'):
+            messages.error(request, "You do not have permission to access this page.")
+            return redirect('profile') 
+        return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        policy = form.save(commit=False)
+
+        official = Official.objects.get(user=self.request.user)
+        policy.official = official
+        policy.save()
+
+        # store policy id for later use when rerouting url
+        self.policy_id = policy.policy_id
+
+        messages.success(self.request, "Your policy has been posted.")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "There was an error posting your policy.")
+        return super().form_invalid(form)
+    
+    def get_success_url(self):
+        if hasattr(self, 'policy_id'):
+            return reverse_lazy('policy_detail', args=[self.policy_id])
+        return reverse_lazy('home')
+    
+
+class EventCreationView(LoginRequiredMixin, FormView):
+    template_name = 'djangoapp/event_creation.html'
+    form_class = EventCreationForm
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the logged-in user is an official
+        if not hasattr(request.user, 'is_official'):
+            messages.error(request, "You do not have permission to access this page.")
+            return redirect('profile') 
+        return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        event = form.save(commit=False)
+
+        official = Official.objects.get(user=self.request.user)
+        event.official = official
+        event.save()
+        messages.success(self.request, "Your event has been posted.")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "There was an error posting your event.")
+        return super().form_invalid(form)
+    
+    def get_success_url(self):
+        user_id = self.request.user.id
+        return reverse_lazy('profile', args=[user_id])
+
 
 
 def PolicyDetail(request, policy_id):
@@ -226,12 +303,12 @@ def PolicyDetail(request, policy_id):
 
 
 def CandidateDetail(request, user_id):
-    candidate = get_object_or_404(Candidate, user_id=user_id)
+    official = get_object_or_404(Official, user_id=user_id)
     policies = Policy.objects.filter(candidate=candidate)
     events = Event.objects.filter(candidate=candidate)
     
     return render(request, 'djangoapp/candidate_detail.html',{
-        'candidate' : candidate,
+        'official' : official,
         'policies' : policies,
         'events' : events
     })

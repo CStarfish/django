@@ -37,7 +37,9 @@
             <a href="{% url 'candidacy' %}">Apply for Candidacy</a>
         {% endif %}
         <!-- Check if user is candidate and allow to make policies and events -->
-        {% if user.is_candidate %}
+        {% if user.is_official %}
+        <a href="{% url 'policy_creation' %}">Create Policy</a>
+        <a href="{% url 'event_creation' %}">Create Event</a>
         {% endif %}
     </form>
 </div>

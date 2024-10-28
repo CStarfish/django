@@ -208,13 +208,13 @@ class Candidate(models.Model):
 
 class Policy(models.Model):
     policy_id = models.AutoField(primary_key = True)
-    candidate = models.ForeignKey(
-        Candidate,
+    official = models.ForeignKey(
+        Official,
         on_delete = models.CASCADE,
         related_name = 'policies'
     )
     name = models.CharField(max_length = 45)
-    desc = models.CharField(max_length = 90, null = True, blank = True)
+    desc = models.TextField(default = '')
 
     class Meta:
         db_table = 'Policy'
@@ -225,16 +225,17 @@ class Policy(models.Model):
 
 class Event(models.Model):
     event_id = models.AutoField(primary_key = True)
-    candidate = models.ForeignKey(
-        Candidate,
+    official = models.ForeignKey(
+        Official,
         on_delete = models.CASCADE,
         related_name ='events'
     )
     name = models.CharField(max_length = 45, null = True, blank = True)
     location = models.CharField(max_length = 90, null = True, blank = True)
-    official_count = models.IntegerField(null = True, blank = True)
+    official_count = models.IntegerField(null = True, blank = True, default = 0)
     start = models.DateTimeField(null = True, blank = True)
     end = models.DateTimeField(null = True, blank = True)
+    desc = models.TextField(default = '')
 
     class Meta:
         db_table = 'Event'

@@ -3,7 +3,7 @@
 {% load static %}
 {% block content %}
 <div class = 'container'>
-    <form method="POST" action="{% url 'candidacy' %}">
+    <form method="POST" action="{% url 'event_creation' %}">
         {% csrf_token %}
         <!-- Include error messages -->
         {% if form.errors %}
@@ -20,18 +20,30 @@
 
         <!-- Campaign Details -->
         <fieldset>
-            <legend>Campaign Details</legend>
+            <legend>Create Event</legend>
             <div>
-                <p></p><label for="campaign_title">Campaign Title:</label></p>
-                {{ form.campaign_name }}
+                <p></p><label for="event_name">Event Name:</label></p>
+                {{ form.name }}
             </div>
             <div>
-                <p><label for="campaign_description">Campaign Description:</label></p>
-                {{ form.campaign_details }}
+                <p><label for="event_location">Location:</label></p>
+                {{ form.location }}
+            </div>
+            <div>
+                <p><label for="event_start">Start time:</label></p>
+                {{ form.start }}
+            </div>
+            <div>
+                <p><label for="event_end">End time:</label></p>
+                {{ form.end }}
+            </div>
+            <div>
+                <p><label for="event_desc">Event Description:</label></p>
+                {{ form.desc }}
             </div>
         </fieldset>
         <div>
-            <button type="submit">Submit Application</button>
+            <button type="submit">Create</button>
         </div>
 </form>
 </div>

@@ -25,6 +25,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', RedirectView.as_view(url='home/', permanent=True)),
     path('home/', views.HomeView, name='home'),
+    path('about/', views.AboutView, name='about'),
     path('admin/', admin.site.urls),
     path('search/', views.SearchView.as_view(), name='search'),
     path('results/', views.ResultsView, name='results'),
@@ -50,6 +51,8 @@ urlpatterns = [
     path('logout/', views.LogoutView, name='logout'),
     path('register/', views.RegisterView.as_view(), name='register'),
     path('profile/<int:user_id>', views.ProfileView.as_view(), name='profile'),
+    path('policy_creation/', views.PolicyCreationView.as_view(), name='policy_creation'),
     path('policy/<int:policy_id>', views.PolicyDetail, name='policy_detail'),
+    path('event_creation/', views.EventCreationView.as_view(), name='event_creation'),
     path('candidate/<int:user_id>', views.CandidateDetail, name='candidate_detail')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

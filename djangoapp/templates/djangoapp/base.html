@@ -17,20 +17,27 @@
         <div class="logo">Voting Guide</div>
         <section class="search">
             <!-- Search button logic -->
+            <button id="toggle-filters">Filters</button>
             <form method="GET" action="{% url 'search' %}">
-                    {{ search_form.query }}
+                {{ search_form.query }}
                     <!-- <div class="filters">
                         <h3>Filter By:</h3>
                         {{ form.filter1 }}
                     </div> -->
-                    <button type="submit" value="OK">Search</button>
+                <button type="submit" value="OK">Search</button>
             </form>
         </section>
         <nav>
             <ul>
                 <li><a href="{% url 'home' %}">Home</li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Profile</a></li>
+                <li><a href="{% url 'about' %}">About</a></li>
+                <li>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'profile' user.id %}">Profile</a>
+                    {% else %}
+                        <a href="{% url 'login' %}">Profile</a>
+                    {% endif %}
+                </li>
                 <li class="login">
                     {% if user.is_authenticated %}
                         <a href="{% url 'logout' %}">Log Out</a>
@@ -41,7 +48,55 @@
             </ul>
         </nav>
     </header>
+    <div class="container">
+        <div class="filters" id="filter-section" style="display: none;">
+            <h3>Filter By:</h3>
+            {{ search_form.filter1 }}
+        </div>
+    </div>
+    <!-- Displays messages from messages sent through views -->
+    <div class="container">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert message alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
     {% block content %}{% endblock %}
 
     <!-- Javascripts here if needed -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // For displaying website responses
+            const messages = document.querySelectorAll('.message');
+            
+            messages.forEach(function(msg) {
+                msg.style.display = 'block';
+                msg.style.opacity = '1'; 
+                setTimeout(function() {
+                    msg.style.opacity = '0';
+                }, 5000);
+    
+                // message fade out
+                setTimeout(function() {
+                    msg.style.display = 'none';
+                }, 5500);
+            });
+    
+            // For search bar filter
+            const toggleButton = document.getElementById("toggle-filters");
+            const filterSection = document.getElementById("filter-section");
+    
+            toggleButton.addEventListener("click", function () {
+                // Toggle the display property of the filter section
+                if (filterSection.style.display === "none" || filterSection.style.display === "") {
+                    filterSection.style.display = "block";  // Show filters
+                } else {
+                    filterSection.style.display = "none";   // Hide filters
+                }
+            });
+        });
+    </script>
 </body>
