@@ -29,7 +29,7 @@
             <strong>Policies:</strong>
             <ul>
                 {% for policy in policies.all %}
-                    <li>{{ policy.name }}: {{ policy.desc }} - By {{ policy.candidate.official.user.firstname }} {{ policy.candidate.official.user.lastname }}</li>
+                    <li><a href="{% url 'profile' user_id=user.id %}">{{ user.firstname }} {{ user.lastname }} - {{ user.email }}</a></li>
                 {% empty %}
                     <li>No policies match.</li>
                 {% endfor %}
