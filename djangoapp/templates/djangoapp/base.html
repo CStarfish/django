@@ -20,12 +20,7 @@
             <button id="toggle-filters">Filters</button>
             <form method="GET" action="{% url 'search' %}">
                 {{ search_form.query }}
-                    <!-- <div class="filters">
-                        <h3>Filter By:</h3>
-                        {{ form.filter1 }}
-                    </div> -->
                 <button type="submit" value="OK">Search</button>
-            </form>
         </section>
         <nav>
             <ul>
@@ -50,8 +45,9 @@
     </header>
     <div class="container">
         <div class="filters" id="filter-section" style="display: none;">
-            <h3>Filter By:</h3>
-            {{ search_form.filter1 }}
+                <h3>Filter By:</h3>
+                {{ search_form.filter1 }}
+            </form>
         </div>
     </div>
     <!-- Displays messages from messages sent through views -->

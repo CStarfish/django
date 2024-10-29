@@ -15,17 +15,17 @@
             <strong>Users:</strong>
             <ul>
                 {% for user in users.all %}
-                    <div class="container">
-                        <li><a href="{% url 'profile_page' user_id=user.id %}">{{ user.first_name }} {{ user.last_name }}</a></li>
-                        {% if user.is_candidate %}
-                            <ul>Candidate</ul>
-                        {% elif user.is_official %}
-                            <ul>Official</ul>
-                        {% elif user.is_student %}
-                            <ul>Student</ul>
-                        {% endif %}
-                        <ul>Email: {{ user.email }}</ul>
-                    </div>
+                    <li><a href="{% url 'profile_page' user_id=user.id %}">{{ user.first_name }} {{ user.last_name }}</a></li>
+                    {% if user.is_candidate %}
+                        <ul>Candidate</ul>
+                    {% elif user.is_official %}
+                        <ul>Official</ul>
+                    {% elif user.is_student %}
+                        <ul>Student</ul>
+                    {% else %}
+                        <ul>User</ul>
+                    {% endif %}
+                    <ul>Email: {{ user.email }}</ul>
                 {% empty %}
                     <li>No users match.</li>
                 {% endfor %}
@@ -37,7 +37,7 @@
             <strong>Policies:</strong>
             <ul>
                 {% for policy in policies.all %}
-                    <li><a href="{% url 'policy_page' policy.policy_id %}">{{ policy.name }} {{ policy.desc }}</a></li>
+                    <li><a href="{% url 'policy_page' policy.policy_id %}">{{ policy.name }}: {{ policy.desc }}</a></li>
                 {% empty %}
                     <li>No policies match.</li>
                 {% endfor %}

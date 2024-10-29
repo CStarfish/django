@@ -146,12 +146,12 @@ class SearchView(FormView):
                     events = Event.objects.all()
             case 'candidates':
                 if query:
-                    users = Candidate.objects.filter(official__user__firstname__icontains=query)
+                    users = User.objects.filter(is_candidate=True)
                 else:
-                    users = Candidate.objects.all()
+                    users = User.objects.filter(is_candidate=True)
             case _: # Default to full output of every record if no filter is selected
                 if query:
-                    users = User.objects.filter(official__user__first_name__icontains=query)
+                    users = User.objects.filter(first_name__icontains=query)
                     policies = Policy.objects.filter(name__icontains=query)
                     events = Event.objects.filter(name__icontains=query)
                 else:
@@ -168,6 +168,7 @@ class SearchView(FormView):
 
 
 # Output results of search with filter used
+# CURRENTLY UNUSED
 def ResultsView(request):
     query = request.GET.get('search')
     filter = request.GET.get('filter1')
@@ -192,27 +193,24 @@ def ResultsView(request):
                 events = Event.objects.filter(name__icontains=query)
             else:
                 events = Event.objects.all()
-        case 'political party':
+        case 'candidate':
             if query:
-                political_party = PoliticalParty.objects.filter(name__icontains=query)
+                users = User.objects.filter(is_candidate=True)
             else:
-                political_party = PoliticalParty.objects.all()
+                users = User.objects.all()
         case _: # Default to full output of every record if no filter is selected
             if query:
                 users = User.objects.filter(official__user__firstname__icontains=query)
                 policies = Policy.objects.filter(name__icontains=query)
                 events = Event.objects.filter(name__icontains=query)
-                political_party = PoliticalParty.objects.filter(name__icontains=query)
             else:
                 users = User.objects.all()
                 policies = Policy.objects.all()
                 events = Event.objects.all()
-                political_party = PoliticalParty.objects.all()
     
     return render(request, 'djangoapp/results.html', {"users": users,
                                                       "policies": policies,
                                                       "events": events,
-                                                      "political_party": political_party,
                                                       "query": query})
     #candidates = Candidate.objects.select_related('official_user')
 
