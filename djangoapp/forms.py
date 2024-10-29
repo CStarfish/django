@@ -94,10 +94,10 @@ class LoginForm(AuthenticationForm):
 
 
 class UpdateUserForm(forms.ModelForm):
-    email = forms.EmailField(required = False)
-    username = forms.CharField(required = False)
-    first_name = forms.CharField(required = False)
-    last_name = forms.CharField(required = False)
+    email = forms.EmailField(required=False)
+    username = forms.CharField(required=False)
+    first_name = forms.CharField(required=False)
+    last_name = forms.CharField(required=False)
     political_party = forms.ModelChoiceField(
         queryset=PoliticalParty.objects.all(),
         empty_label="None",
@@ -129,7 +129,7 @@ class UpdateProfileForm(forms.ModelForm):
 class SearchForm(forms.Form):
     query = forms.CharField(
         required = False, 
-        widget = forms.TextInput(attrs = {
+        widget = forms.TextInput(attrs={
             'id': 'search', 
             'placeholder': 'Search for candidates or topics...'
         })
@@ -145,7 +145,7 @@ class SearchForm(forms.Form):
     filter1 = forms.ChoiceField(
         choices = FILTER_CHOICES, 
         required = False, 
-        widget = forms.Select(attrs = {'id': 'filter1'})
+        widget = forms.Select(attrs={'id': 'filter1'})
     )
 
 

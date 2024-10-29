@@ -311,16 +311,16 @@ class EventCreationView(LoginRequiredMixin, FormView):
 
 
 def PolicyPageView(request, policy_id):
-    policy = get_object_or_404(Policy, policy_id = policy_id)
+    policy = get_object_or_404(Policy, policy_id=policy_id)
     return render(request, 'djangoapp/policy_page.html', {'policy': policy})
 
 def EventPageView(request, event_id):
-    event = get_object_or_404(Event, event_id = event_id)
+    event = get_object_or_404(Event, event_id=event_id)
     return render(request, 'djangoapp/event_page.html', {'event': event})
 
 
 def ProfilePageView(request, user_id):
-    user = get_object_or_404(User, id = user_id)
+    user = get_object_or_404(User, id=user_id)
     candidate = None
     official = None
     student = None
@@ -328,13 +328,13 @@ def ProfilePageView(request, user_id):
     events = None
 
     if(user.is_candidate):
-        candidate = get_object_or_404(Candidate, user_id = user_id)
+        candidate = get_object_or_404(Candidate, user_id=user_id)
     if(user.is_official):
-        official = get_object_or_404(Official, user_id = user_id)
-        policies = Policy.objects.filter(official__user__id = user_id)
-        events = Event.objects.filter(official__user__id = user_id)
+        official = get_object_or_404(Official, user_id=user_id)
+        policies = Policy.objects.filter(official__user__id=user_id)
+        events = Event.objects.filter(official__user__id=user_id)
     if(user.is_student):
-        student = get_object_or_404(Student, user_id = user_id)
+        student = get_object_or_404(Student, user_id=user_id)
         
 
     return render(request, 'djangoapp/profile_page.html',{

@@ -7,9 +7,9 @@ from PIL import Image, ImageOps
 
 #import your models here
 class PoliticalParty(models.Model):
-    political_party_id = models.AutoField(primary_key = True)
-    name = models.CharField(max_length = 45)
-    member_count = models.IntegerField(null = True, blank = True)
+    political_party_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=45)
+    member_count = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = 'Political party'
@@ -130,7 +130,7 @@ class Profile(models.Model):
         related_name='profile'
     )
     profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images')
-    bio = models.TextField(default = '')
+    bio = models.TextField(default='')
 
     class Meta:
         db_table = 'Profile'
@@ -163,8 +163,8 @@ class Student(models.Model):
         on_delete = models.CASCADE,
         primary_key = True
     )
-    student_id = models.CharField(max_length = 8, null = True, blank = True)
-    school_name = models.CharField(max_length = 45, null = True, blank = True)
+    student_id = models.CharField(max_length=8, null=True, blank=True)
+    school_name = models.CharField(max_length=45, null=True, blank=True)
 
     class Meta:
         db_table = 'Student'
@@ -179,7 +179,7 @@ class Official(models.Model):
         on_delete = models.CASCADE,
         primary_key = True
     )
-    state = models.CharField(max_length = 45)
+    state = models.CharField(max_length=45)
 
     class Meta:
         db_table = 'Official'
@@ -194,8 +194,8 @@ class Candidate(models.Model):
         on_delete = models.DO_NOTHING,
         primary_key = True
     )
-    campaign_name = models.TextField(default = '')
-    campaign_details = models.TextField(default = '')
+    campaign_name = models.TextField(default='')
+    campaign_details = models.TextField(default='')
     date_applied = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
 
@@ -207,13 +207,13 @@ class Candidate(models.Model):
 
 
 class Policy(models.Model):
-    policy_id = models.AutoField(primary_key = True)
+    policy_id = models.AutoField(primary_key=True)
     official = models.ForeignKey(
         Official,
         on_delete = models.CASCADE,
         related_name = 'policies'
     )
-    name = models.CharField(max_length = 45)
+    name = models.CharField(max_length=45)
     desc = models.TextField(default = '')
 
     class Meta:
@@ -224,18 +224,18 @@ class Policy(models.Model):
 
 
 class Event(models.Model):
-    event_id = models.AutoField(primary_key = True)
+    event_id = models.AutoField(primary_key=True)
     official = models.ForeignKey(
         Official,
         on_delete = models.CASCADE,
         related_name ='events'
     )
-    name = models.CharField(max_length = 45, null = True, blank = True)
-    location = models.CharField(max_length = 90, null = True, blank = True)
-    official_count = models.IntegerField(null = True, blank = True, default = 0)
-    start = models.DateTimeField(null = True, blank = True)
-    end = models.DateTimeField(null = True, blank = True)
-    desc = models.TextField(default = '')
+    name = models.CharField(max_length=45, null=True, blank=True)
+    location = models.CharField(max_length=90, null=True, blank=True)
+    official_count = models.IntegerField(null=True, blank=True, default=0)
+    start = models.DateTimeField(null=True, blank=True)
+    end = models.DateTimeField(null=True, blank=True)
+    desc = models.TextField(default='')
 
     class Meta:
         db_table = 'Event'
@@ -245,13 +245,13 @@ class Event(models.Model):
 
 
 class ElectionOffice(models.Model):
-    election_office_id = models.AutoField(primary_key = True)
+    election_office_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(
         User,
         on_delete = models.DO_NOTHING,
         related_name ='election_offices'
     )
-    location = models.CharField(max_length = 90, null = True, blank = True)
+    location = models.CharField(max_length=90, null=True, blank=True)
 
     class Meta:
         db_table = 'Election Office'
@@ -261,7 +261,7 @@ class ElectionOffice(models.Model):
 
 
 class Rating(models.Model):
-    rating_id = models.AutoField(primary_key = True)
+    rating_id = models.AutoField(primary_key=True)
     candidate = models.ForeignKey(
         Candidate,
         on_delete = models.DO_NOTHING,
@@ -272,8 +272,8 @@ class Rating(models.Model):
         on_delete = models.DO_NOTHING,
         related_name ='ratings'
     )
-    rating = models.IntegerField(null = True, blank = True)
-    desc = models.CharField(max_length = 90, null = True, blank = True)
+    rating = models.IntegerField(null=True, blank=True)
+    desc = models.CharField(max_length=90, null=True, blank=True)
 
     class Meta:
         db_table = 'Rating'
@@ -283,7 +283,7 @@ class Rating(models.Model):
 
 
 class Messages(models.Model):
-    message_id = models.AutoField(primary_key = True)
+    message_id = models.AutoField(primary_key=True)
     user1 = models.ForeignKey(
         User,
         on_delete = models.DO_NOTHING,
@@ -294,8 +294,8 @@ class Messages(models.Model):
         on_delete = models.DO_NOTHING,
         related_name ='messages_received'
     )
-    message = models.CharField(max_length = 100, null = True, blank = True)
-    date_created = models.DateTimeField(auto_now_add = True, null = True, blank = True)
+    message = models.CharField(max_length=100, null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
         db_table = 'Messages'
