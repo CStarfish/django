@@ -174,7 +174,7 @@ class SearchView(FormView):
                     events = Event.objects.all()
             case 'candidates':
                 if query:
-                    users = User.objects.filter(is_candidate=True)
+                    users = User.objects.filter(is_candidate=True, name__icontains=query)
                 else:
                     users = User.objects.filter(is_candidate=True)
             case _: # Default to full output of every record if no filter is selected
