@@ -49,7 +49,7 @@
             <strong>Events:</strong>
             <ul>
                 {% for event in events.all %}
-                    <li><a href="{% url 'event_page' event.event_id %}">{{ event.name }} - {{ event.location }} - Host: {{ event.official.user.firstname }} {{ event.official.user.lastname }}</a></li>
+                    <li><a href="{% url 'event_page' event.event_id %}">{{ event.name }} - {{ event.location }} - Host: {{ event.official.user.first_name }} {{ event.official.user.last_name }}</a></li>
                 {% empty %}
                     <li>No events match.</li>
                 {% endfor %}

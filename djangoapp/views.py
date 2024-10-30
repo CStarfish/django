@@ -2,10 +2,14 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.views import (PasswordResetView, PasswordChangeView)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 
 import calendar
 from calendar import HTMLCalendar
@@ -14,7 +18,7 @@ from datetime import datetime
 from django.urls import reverse_lazy
 
 from django.views import View
-from django.views.generic import TemplateView, FormView
+from django.views.generic import (TemplateView, FormView)
 
 from .models import *
 from .models import (User, Profile, Policy, Event, PoliticalParty, Candidate, Candidate)
@@ -46,7 +50,7 @@ class RegisterView(FormView):
         return super().form_invalid(form)
 
 
-#login page
+# login page
 class LoginView(FormView):
     template_name = 'djangoapp/login.html'
     form_class = LoginForm
@@ -62,25 +66,49 @@ class LoginView(FormView):
             return self.form_invalid(form)
 
 
-#logout
+# logout
 def LogoutView(request):
     logout(request)  # Clears session
     return redirect('home')
 
 
-#Password reset
+# Password reset
 class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
-    template_name = 'password_reset.html'
+    template_name = 'djangoapp/password_reset.html'
     email_template_name = 'password_reset_email.html'
     subject_template_name = 'password_reset_subject'
     success_message = "We've emailed you instructions for setting your password, " \
                       "if an account exists with the email you entered. You should receive them shortly." \
                       " If you don't receive an email, " \
                       "please make sure you've entered the address you registered with, and check your spam folder."
+    success_url = reverse_lazy('login')
+
+    def form_valid(self, form):
+        # Find the user by email
+        email = form.cleaned_data.get("email")
+        users = User.objects.filter(email=email)
+        
+        if users.exists():
+            user = users.first()
+            # Generate token and UID for the user
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            
+            # Redirect to PasswordResetConfirmView with UID and token
+            return redirect(reverse_lazy('password_reset_confirm', kwargs={'uidb64': uid, 'token': token}))
+        else:
+            # No user found
+            messages.error(self.request, "Invalid Email.")
+            return super().form_invalid(form)
+        
+
+class PasswordChangeView(LoginRequiredMixin, SuccessMessageMixin, PasswordChangeView):      
+    template_name = 'djangoapp/password_change.html'
+    success_message = "Successfully Changed Your Password"
     success_url = reverse_lazy('home')
 
 
-#profile page
+# profile page
 class ProfileView(LoginRequiredMixin, View):
     template_name = 'djangoapp/profile.html'
 
@@ -119,7 +147,7 @@ class ProfileView(LoginRequiredMixin, View):
             })
 
 
-#Search engine logic
+# Search engine logic
 class SearchView(FormView):
     template_name = 'djangoapp/results.html'
     form_class = SearchForm
@@ -195,9 +223,9 @@ def ResultsView(request):
                 events = Event.objects.all()
         case 'candidate':
             if query:
-                users = User.objects.filter(is_candidate=True)
+                users = User.objects.filter(is_candidate=True, name__icontains=query)
             else:
-                users = User.objects.all()
+                users = User.objects.filter(is_candidate=True)
         case _: # Default to full output of every record if no filter is selected
             if query:
                 users = User.objects.filter(official__user__firstname__icontains=query)
@@ -263,7 +291,7 @@ class PolicyCreationView(LoginRequiredMixin, FormView):
         policy.official = official
         policy.save()
 
-        # store policy id for later use when rerouting url
+        # Store policy id for later use when rerouting url
         self.policy_id = policy.policy_id
 
         messages.success(self.request, "Your policy has been posted.")

@@ -27,7 +27,7 @@
         <p>Last name: {{ user_form.last_name }}</p>
         <p>Political Party: {{ user_form.political_party }}</p>
         <div class="form-group">
-            <a href="#">Change Password</a>
+            <a href="{% url 'password_change' %}">Change Password</a>
             <hr>
             <label class="small mb-1">Change Profile Picture:</label>
             {{ profile_form.profile_picture }}
