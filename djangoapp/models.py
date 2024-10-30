@@ -39,7 +39,7 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
-    
+    #creates admin user
     def create_superuser(self, first_name, last_name, username, email, date_of_birth, password=None):
         """
         Creates and saves a superuser with the given email, date of
@@ -243,7 +243,7 @@ class Event(models.Model):
     def __str__(self):
         return self.name or f"Event {self.event_id}"
 
-
+#TO DO: Allow admin access to create election offices
 class ElectionOffice(models.Model):
     election_office_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(
