@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 
-from djangoapp.models import User, Candidate
+from djangoapp.models import User, Candidate, ElectionOffice
 
 
 class UserCreationForm(forms.ModelForm):
@@ -96,11 +96,22 @@ class CandidacyAdmin(admin.ModelAdmin):
         self.message_user(request, "Selected candidacies have been approved.")
     approve_candidates.short_description = "Approve selected candidacies"
     
-
+class ElectionOfficeForm(forms.ModelForm):
+    # Custom form for ElectionOffice, untested
+    # Need to confirm if UserAdmin can create ElectionOfficeForm, see below
+    class Meta:
+        model = ElectionOffice
+        fields = ['user', 'location'] #'user' = election office name
+class ElectionOfficeAdmin(admin.ModelAdmin):    # Custom admin for ElectionOffice
+    form = ElectionOfficeForm  
+    list_display = ('election_office_id', 'user', 'location')
+    search_fields = ('user', 'location') #add more fields as needed
+    ordering = ('election_office_id') 
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
 admin.site.register(Candidate, CandidacyAdmin)
+admin.site.register(ElectionOffice) 
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
