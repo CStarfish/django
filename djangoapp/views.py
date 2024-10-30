@@ -33,35 +33,38 @@ def HomeView(request):
 def AboutView(request):
     return render(request, 'djangoapp/index.html')
 
-
+# register page
+# Displays register form and sends form data to the RegistrationForm
 class RegisterView(FormView):
     template_name = 'djangoapp/register.html'
     form_class = RegistrationForm
     success_url = reverse_lazy('profile')
 
-    def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
+    def form_valid(self, form):     
+        user = form.save()  
+        login(self.request, user)   # Log the user in after registration
         messages.success(self.request, "Successful registration!")
-        return redirect('profile', user_id=user.id)
+        return redirect('profile', user_id=user.id) # Redirect to the profile page
 
-    def form_invalid(self, form):
-        messages.error(self.request, "Failed registration")
-        return super().form_invalid(form)
+    def form_invalid(self, form):   
+        messages.error(self.request, "Failed registration") 
+        return super().form_invalid(form) # Return to the registration page with errors
 
 
 # login page
+# Displays login form and authenticates LoginForm data
 class LoginView(FormView):
-    template_name = 'djangoapp/login.html'
-    form_class = LoginForm
-
-    def form_valid(self, form):
-        user = authenticate(self.request, **form.cleaned_data)
-        if user is not None:
-            login(self.request, user)
+    template_name = 'djangoapp/login.html' 
+    form_class = LoginForm  
+   
+    # If the form is valid, authenticate the user and log them in
+    def form_valid(self, form): 
+        user = authenticate(self.request, **form.cleaned_data)  
+        if user is not None: 
+            login(self.request, user) 
             messages.success(self.request, "Successful login!")
-            return redirect('profile', user_id=user.id)
-        else:
+            return redirect('profile', user_id=user.id) 
+        else: 
             messages.error(self.request, "Invalid username or password.")
             return self.form_invalid(form)
 
@@ -109,10 +112,12 @@ class PasswordChangeView(LoginRequiredMixin, SuccessMessageMixin, PasswordChange
 
 
 # profile page
+# Displays and allows updates to user profile through UpdateUserForm and UpdateProfileForm
 class ProfileView(LoginRequiredMixin, View):
     template_name = 'djangoapp/profile.html'
 
-    def get(self, request, user_id):
+    # GET request to display the profile page
+    def get(self, request, user_id):    
         user = get_object_or_404(User, pk=user_id)
         profile = get_object_or_404(Profile, user=user)
         user_form = UpdateUserForm(instance=request.user)
@@ -123,6 +128,7 @@ class ProfileView(LoginRequiredMixin, View):
             'profile_form': profile_form
         })
 
+    # POST request to update the profile page
     def post(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
         profile = get_object_or_404(Profile, user=user)
@@ -148,6 +154,7 @@ class ProfileView(LoginRequiredMixin, View):
 
 
 # Search engine logic
+# Displays search results based on user input and sends to results.html
 class SearchView(FormView):
     template_name = 'djangoapp/results.html'
     form_class = SearchForm
@@ -242,7 +249,11 @@ def ResultsView(request):
                                                       "query": query})
     #candidates = Candidate.objects.select_related('official_user')
 
+# Handlers for candidacy, policy, and event creation
+# Display forms for creating candidacies, policies, and events
+# then sends forms for page generation
 
+# Candidacy creation
 class CandidacyView(LoginRequiredMixin, FormView):
     template_name = 'djangoapp/candidacy.html'
     form_class = CandidacyForm
@@ -272,7 +283,7 @@ class CandidacyView(LoginRequiredMixin, FormView):
         user_id = self.request.user.id
         return reverse_lazy('profile', args=[user_id])
     
-
+# Policy creation
 class PolicyCreationView(LoginRequiredMixin, FormView):
     template_name = 'djangoapp/policy_creation.html'
     form_class = PolicyCreationForm
@@ -306,7 +317,7 @@ class PolicyCreationView(LoginRequiredMixin, FormView):
             return reverse_lazy('policy_page', args=[self.policy_id])
         return reverse_lazy('home')
     
-
+# Event creation
 class EventCreationView(LoginRequiredMixin, FormView):
     template_name = 'djangoapp/event_creation.html'
     form_class = EventCreationForm
