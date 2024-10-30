@@ -18,7 +18,6 @@ class PoliticalParty(models.Model):
         return self.name
 
 
-
 class UserManager(BaseUserManager):
     def create_user(self, first_name, last_name, username, email, date_of_birth, password=None):
         """
