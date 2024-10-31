@@ -190,7 +190,7 @@ class Official(models.Model):
 class Candidate(models.Model):
     user = models.OneToOneField(
         Official,
-        on_delete = models.DO_NOTHING,
+        on_delete = models.CASCADE,
         primary_key = True
     )
     campaign_name = models.TextField(default='')
@@ -244,11 +244,10 @@ class Event(models.Model):
 
 #TO DO: Allow admin access to create election offices
 class ElectionOffice(models.Model):
-    election_office_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(
-        User,
-        on_delete = models.DO_NOTHING,
-        related_name ='election_offices'
+    user = models.OneToOneField(
+        Official,
+        on_delete = models.CASCADE,
+        primary_key = True
     )
     location = models.CharField(max_length=90, null=True, blank=True)
 
@@ -256,7 +255,25 @@ class ElectionOffice(models.Model):
         db_table = 'Election Office'
 
     def __str__(self):
-        return self.location or f"Election Office {self.election_office_id}"
+        return self.location or f"Election Office {self.user.user.username}"
+    
+
+class PollingLocation(models.Model):
+    polling_location_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(
+        ElectionOffice,
+        on_delete = models.DO_NOTHING,
+        related_name = 'polling_location'
+    )
+    name = models.CharField(max_length=90, null=True, blank=True)
+    location = models.CharField(max_length=90, null=True, blank=True)
+
+
+    class Meta:
+        db_table = 'Polling Location'
+
+    def __str__(self):
+        return self
 
 
 class Rating(models.Model):
