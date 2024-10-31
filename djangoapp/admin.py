@@ -104,7 +104,7 @@ class ElectionOfficeForm(forms.ModelForm):
         fields = ['user', 'location'] #'user' = election office name
 class ElectionOfficeAdmin(admin.ModelAdmin):    # Custom admin for ElectionOffice
     form = ElectionOfficeForm  
-    list_display = ('election_office_id', 'user', 'location')
+    list_display = ('user', 'location')
     search_fields = ('user', 'location') #add more fields as needed
     ordering = ('election_office_id') 
 
