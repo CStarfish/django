@@ -318,3 +318,77 @@ class Messages(models.Model):
 
     def __str__(self):
         return f"Message from {self.user1} to {self.user2} at {self.date_created}"
+    
+class Follow(models.Model):
+    #
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='follows'
+    )
+    
+    candidate = models.ForeignKey(
+        on_delete=models.CASCADE,
+        related_name='followers'
+    )
+    
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name='followers'
+    )
+    
+    date_followed = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'Follow'
+        unique_together = ('user','candidate','event')
+        
+    def __str__(self):
+        return f"{self.user.username} follows {self.candidate or self.event}"
+    # store updates related to candidates or events
+class Update(models.Model):
+    candidate = models.ForeignKey(
+        Candidate,
+        on_delete=models.CASCADE,
+        related_name='updates'
+    )
+    
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name='updates'
+    )
+    
+    title = models.CharField(max_length=150)
+    content = models.TextField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = "Update"
+    
+    def __str__(self):
+        return f"Update: {self.title} for {self.candidate or self.event}"
+    
+class UserUpdate(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='received_updates'
+    )
+    
+    update = models.ForeignKey(
+        Update,
+        on_delete=models.CASCADE,
+        related_name='user_updates'
+    )
+    
+    read = models.BooleanField(default=False)
+    
+    date_received = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = 'UserUpdate'
+        
+    def __str__(self):
+        return f"Update for {self.user.username} : {self.update.title}"
