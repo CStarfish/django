@@ -15,13 +15,13 @@
 <body>
     <header>
         <div class="logo">Voting Guide</div>
-        <section class="search">
+        <!-- <section class="search"> -->
             <!-- Search button logic -->
-            <button id="toggle-filters">Filters</button>
+            <!-- <button id="toggle-filters">Filters</button>
             <form method="GET" action="{% url 'search' %}">
                 {{ search_form.query }}
-                <button type="submit" value="OK">Search</button>
-        </section>
+                <button type="submit" value="OK">Search</button> -->
+        <!-- </section> -->
         <nav>
             <ul>
                 <li><a href="{% url 'home' %}">Home</li>
@@ -43,13 +43,13 @@
             </ul>
         </nav>
     </header>
-    <div class="container">
+    <!-- <div class="container">
         <div class="filters" id="filter-section" style="display: none;">
                 <h3>Filter By:</h3>
                 {{ search_form.filter1 }}
             </form>
         </div>
-    </div>
+    </div> -->
     <!-- Displays messages from messages sent through views -->
     <div class="container">
         {% if messages %}

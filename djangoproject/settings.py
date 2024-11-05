@@ -85,7 +85,7 @@ DATABASES = {
         #'USER': 'jly',
         'USER': 'root', #for local
         #'PASSWORD': 'CSC648@Server',
-        'PASSWORD': '1234', #for local
+        'PASSWORD': 'new_password', #for local
         #'HOST': '127.0.0.1',
         'HOST': 'localhost', #for local
         'PORT': '3306',  # Usually 3306
