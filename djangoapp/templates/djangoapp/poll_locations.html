@@ -1,0 +1,16 @@
+{% extends "djangoapp/base.html" %}
+{% block title %} Poll Locations {% endblock%}
+
+{% block content%}
+<div class = "container">
+    <h1>{{PollingLocation.user}}</h1>
+    <p><strong>Created by:</strong>
+        <a href="{% url 'profile_page' PollingLocation.user.id %}">
+        {{ PollingLocation.name }} 
+        </a>
+    </p>
+    <p><strong>{{ PollingLocation.location }}</strong></p>
+    <!--ADD EXAMPLE PHOTO FOR LOCATION HERE-->
+    <!--Embed example link to some office address on Google Maps-->
+</div>
+{% endblock %}
