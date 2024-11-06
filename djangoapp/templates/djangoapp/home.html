@@ -15,7 +15,7 @@
   <button id="toggle-filters" class="btn btn-primary me-2">Filters</button>
   <form
     method="GET"
-    action="{% url 'home' %}"
+    action="{% url 'search' %}"
     class="d-flex align-items-center"
   >
     <input
@@ -31,7 +31,7 @@
 
 <!-- Toggleable Filters Section -->
 <div class="filter-section" id="filter-section" style="display: none">
-  <form method="GET" action="{% url 'home' %}">
+  <form method="GET" action="{% url 'search' %}">
     <label for="filter1" class="form-label">Filter By:</label>
     {{ search_form.filter1 }}
     <button class="btn btn-primary mt-3" type="submit">Apply Filters</button>

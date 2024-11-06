@@ -1,0 +1,13 @@
+# Ignore virtual environment
+.venv/
+venv/
+
+# Ignore Python build files
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Ignore other build or temporary files
+node_modules/
+*.log
+.DS_Store
