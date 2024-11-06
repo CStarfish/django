@@ -8,7 +8,6 @@
   </p>
 </div>
 
-<!-- Centered and Compact Search Bar with Filters -->
 <div
   class="search-bar-nav d-flex justify-content-center align-items-center mx-auto"
 >
@@ -30,7 +29,7 @@
 </div>
 
 <!-- Toggleable Filters Section -->
-<div class="filter-section" id="filter-section" style="display: none">
+<div class="filter-section" id="home-filter-section" style="display: none">
   <form method="GET" action="{% url 'search' %}">
     <label for="filter1" class="form-label">Filter By:</label>
     {{ search_form.filter1 }}
@@ -112,37 +111,17 @@
 <!-- Javascripts here if needed -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // For displaying website responses
-    const messages = document.querySelectorAll(".message");
-
-    messages.forEach(function (msg) {
-      msg.style.display = "block";
-      msg.style.opacity = "1";
-      setTimeout(function () {
-        msg.style.opacity = "0";
-      }, 5000);
-
-      // message fade out
-      setTimeout(function () {
-        msg.style.display = "none";
-      }, 5500);
-    });
-
-    // For search bar filter
     const toggleButton = document.getElementById("toggle-filters");
-    const filterSection = document.getElementById("filter-section");
+    const filterSection = document.getElementById("home-filter-section");
 
     toggleButton.addEventListener("click", function () {
-      // Toggle the display property of the filter section
-      if (
+      filterSection.style.display =
         filterSection.style.display === "none" ||
         filterSection.style.display === ""
-      ) {
-        filterSection.style.display = "block"; // Show filters
-      } else {
-        filterSection.style.display = "none"; // Hide filters
-      }
+          ? "block"
+          : "none"; // Toggle filters visibility
     });
   });
 </script>
+
 {% endblock %}
