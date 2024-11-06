@@ -96,17 +96,20 @@ class CandidacyAdmin(admin.ModelAdmin):
         self.message_user(request, "Selected candidacies have been approved.")
     approve_candidates.short_description = "Approve selected candidacies"
     
+    
 class ElectionOfficeForm(forms.ModelForm):
     # Custom form for ElectionOffice, untested
     # Need to confirm if UserAdmin can create ElectionOfficeForm, see below
     class Meta:
         model = ElectionOffice
         fields = ['user', 'location'] #'user' = election office name
+
+
 class ElectionOfficeAdmin(admin.ModelAdmin):    # Custom admin for ElectionOffice
     form = ElectionOfficeForm  
     list_display = ('user', 'location')
     search_fields = ('user', 'location') #add more fields as needed
-    ordering = ('election_office_id') 
+    ordering = ('user') 
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)

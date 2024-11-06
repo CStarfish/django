@@ -328,6 +328,7 @@ class Follow(models.Model):
     )
     
     candidate = models.ForeignKey(
+        Candidate,
         on_delete=models.CASCADE,
         related_name='followers'
     )

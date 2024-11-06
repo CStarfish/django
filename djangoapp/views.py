@@ -235,7 +235,7 @@ def ResultsView(request):
                 users = User.objects.filter(is_candidate=True)
         case _: # Default to full output of every record if no filter is selected
             if query:
-                users = User.objects.filter(official__user__firstname__icontains=query)
+                users = User.objects.filter(official__user__first_name__icontains=query)
                 policies = Policy.objects.filter(name__icontains=query)
                 events = Event.objects.filter(name__icontains=query)
             else:
