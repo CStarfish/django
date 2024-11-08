@@ -2,6 +2,7 @@
 {% block title %}{{ user.first_name}}'s Profile {% endblock%}
 {% block content %}
 <div class="container">
+    <!-- Display general user information -->
     <h1>{{ user.first_name }} {{ user.last_name }}'s Profile</h1>
     {% if user.is_student %}
         <p>Student User</p>
@@ -18,11 +19,13 @@
         <p>{{ user.profile.bio }}</p>
     </div>
     
+    <!-- Display candidate campaign if candidate -->
     {% if user.is_candidate %}
         <p><strong>Campaign Name and Details:</strong></p>
         <p>{{ candidate.campaign_name}}: {{ candidate.campaign_details}}</p>
     {% endif %}
 
+    <!-- Display official's policies and events if official -->
     {% if user.is_official %}
         <h2> Policies </h2>
         <ul>
@@ -45,6 +48,35 @@
         {% empty %}
             <p>No events found</p>
         {% endfor %}
+        </ul>
+    {% endif %}
+
+    <!-- Only checks if profile page belongs to candidate, if someone can find out if it can also check that 
+    the current user is not the same as profile user, plase adjust accordingly -->
+    {% if user.is_candidate %}
+        <div class="rating-form">
+            <h2>Leave a Rating</h2>
+            <form method="POST" action="{% url 'profile_page' user.id %}">
+                {% csrf_token %}
+                <div class="star-rating">
+                {% for value, label in rating_form.fields.rating.choices %}
+                    <input type="radio" id="star{{ value }}" name="rating" value="{{ value }}" class="star-input" />
+                    <label for="star{{ value }}" class="star">{{ label }}</label>
+                {% endfor %}
+                </div>
+                {{ rating_form.desc}}
+                <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+        </div>
+
+        <ul>
+            <h2> Ratings </h2>
+            {% for rating in ratings %}
+                <li>{{ rating.user.username }}: {{ rating.rating }} stars</li>
+                <ul>{{ rating.desc }}</ul>
+            {% empty %}
+                <p>No ratings Found</p>
+            {% endfor %}
         </ul>
     {% endif %}
 

@@ -117,7 +117,10 @@ class ProfileView(LoginRequiredMixin, View):
     template_name = 'djangoapp/profile.html'
 
     # GET request to display the profile page
-    def get(self, request, user_id):    
+    def get(self, request, user_id):
+        if not request.user.is_authenticated:
+            return redirect('djangoapp/login.html')
+          
         user = get_object_or_404(User, pk=user_id)
         profile = get_object_or_404(Profile, user=user)
         user_form = UpdateUserForm(instance=request.user)
@@ -181,7 +184,7 @@ class SearchView(FormView):
                     events = Event.objects.all()
             case 'candidates':
                 if query:
-                    users = User.objects.filter(is_candidate=True, name__icontains=query)
+                    users = User.objects.filter(is_candidate=True, first_name__icontains=query)
                 else:
                     users = User.objects.filter(is_candidate=True)
             case _: # Default to full output of every record if no filter is selected
@@ -358,29 +361,65 @@ def EventPageView(request, event_id):
     return render(request, 'djangoapp/event_page.html', {'event': event})
 
 
-def ProfilePageView(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    candidate = None
-    official = None
-    student = None
-    policies = None
-    events = None
+class ProfilePageView(View):
+    form_class = RatingForm
+    template_name = 'djangoapp/profile_page.html'
 
-    if(user.is_candidate):
-        candidate = get_object_or_404(Candidate, user_id=user_id)
-    if(user.is_official):
-        official = get_object_or_404(Official, user_id=user_id)
-        policies = Policy.objects.filter(official__user__id=user_id)
-        events = Event.objects.filter(official__user__id=user_id)
-    if(user.is_student):
-        student = get_object_or_404(Student, user_id=user_id)
+    def get(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+        candidate = None
+        official = None
+        student = None
+        policies = None
+        events = None
+        ratings = None
+
+        rating_form = RatingForm()
+
+        if(user.is_candidate):
+            candidate = get_object_or_404(Candidate, user_id=user_id)
+            ratings = Rating.objects.filter(candidate__user_id=user_id)
+        if(user.is_official):
+            official = get_object_or_404(Official, user_id=user_id)
+            policies = Policy.objects.filter(official__user__id=user_id)
+            events = Event.objects.filter(official__user__id=user_id)
+        if(user.is_student):
+            student = get_object_or_404(Student, user_id=user_id)
         
+        return render(request, 'djangoapp/profile_page.html',{
+            'user' : user,
+            'candidate' : candidate,
+            'official': official,
+            'student': student,
+            'policies': policies,
+            'events': events,
+            'ratings': ratings,
+            'rating_form': rating_form,
+            'current_user': request.user
+        })
+        
+    # Changes post to first double check if user being rated is candidate and if user rating is from another user
+    # Probably not necessary but insurance check
+    def post(self, request, user_id):
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in to leave a rating.")
+            return self.get(request, user_id)
+    
+        user = get_object_or_404(User, id=user_id)
 
-    return render(request, 'djangoapp/profile_page.html',{
-        'user' : user,
-        'candidate' : candidate,
-        'official': official,
-        'student': student,
-        'policies': policies,
-        'events': events
-    })
+        if user.is_candidate and request.user != user:
+            candidate = Candidate.objects.filter(user_id=user_id).first()
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                return self.form_valid(form, candidate)
+        
+        messages.error(self.request, "You are either trying to rate yourself or a non-candidate.")
+        return self.get(request, user_id)
+    
+    def form_valid(self, form, candidate):
+        rating = form.save(commit=False)
+        rating.user = self.request.user
+        rating.candidate = candidate
+        rating.save()
+
+        return redirect('profile_page', user_id=candidate.user_id)

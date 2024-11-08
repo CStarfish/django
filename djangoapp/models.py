@@ -289,7 +289,7 @@ class Rating(models.Model):
         related_name ='ratings'
     )
     rating = models.IntegerField(null=True, blank=True)
-    desc = models.CharField(max_length=90, null=True, blank=True)
+    desc = models.TextField(default='')
 
     class Meta:
         db_table = 'Rating'

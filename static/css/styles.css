@@ -230,3 +230,40 @@ footer ul li a:hover {
     margin: 0 auto;
     /* Center the filter section */
 }
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: left;
+}
+
+.star-rating input[type="radio"] {
+    display: none;  /* Hide the original radio buttons */
+}
+
+.star-rating label {
+    color: #ccc;       /* Default color for unselected stars */
+    cursor: pointer;
+    padding: 0 5px;    /* Space between stars */
+    margin: 0;  /* Remove any unwanted margin */
+}
+
+.star-rating label:before {
+    content: "\f005";  /* Unicode for FontAwesome star icon */
+    font-family: FontAwesome;
+}
+
+/* Highlight selected star and all previous stars on click */
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #ffc107;  /* Gold color for selected and hovered stars */
+}
+
+.star-rating input[type="radio"]:checked ~ label {
+    color: #ffc107;  /* Gold color for all previous stars */
+}
+
+/* Make sure all stars up to the clicked one stay highlighted */
+.star-rating input[type="radio"]:checked + label {
+    color: #ffc107;  /* Gold color for all previous stars */
+}
