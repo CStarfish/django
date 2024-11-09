@@ -5,6 +5,9 @@ from django.contrib.auth.forms import (AuthenticationForm, UserCreationForm)
 from django.core.exceptions import ValidationError
 
 from djangoapp.models import *
+from djangoapp.models import PoliticalParty
+
+
 
 
 class RegistrationForm(UserCreationForm):
@@ -16,9 +19,15 @@ class RegistrationForm(UserCreationForm):
         required=True)
     student_id = forms.CharField(required=False)
     school_name = forms.CharField(required=False)
+    POLITICAL_PARTIES = [
+        ('', 'Select a party'),
+        ('democratic', 'Democratic Party'),
+        ('republican', 'Republican Party')
+    ]
+
     political_party = forms.ModelChoiceField(
         queryset=PoliticalParty.objects.all(),
-        empty_label="None",
+        empty_label="Select a party",
         required=False
     )
     state = forms.CharField(required=False)

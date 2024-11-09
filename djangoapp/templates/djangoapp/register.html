@@ -79,16 +79,7 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-
-            <ul>Political party: {{ form.political_party }} (General and student accounts don't need to pick this right now.)</ul>
-            <!-- displays error with password if passwords don't match-->
-            {% if form.political_party.errors %}
-                <ul class="errorlist">
-                    {% for error in form.political_party.errors %}
-                        <li style="color: red;">{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+          
 
             <!-- Fields for student registration -->
             <div id="student_field" style="display:none;">
@@ -124,6 +115,14 @@
                     {% endfor %}
                 </ul>
                 {% endif %}
+                <ul>Political party: {{ form.political_party }}</ul>
+                {% if form.political_party.errors %}
+                <ul class="errorlist">
+                    {% for error in form.political_party.errors %}
+                        <li style="color: red;">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             </div>
         </div>
         <button type="submit">Register</button>
@@ -134,30 +133,30 @@
 </div>
 
 <script type="text/javascript">
-    const userTypeField = document.getElementById('id_user_type');
-    const studentField = document.getElementById('student_field');
-    const officialField = document.getElementById('official_field');
-  
-    function toggleStudentFields() {
-        if (userTypeField.value === 'student') {
-            studentField.style.display = 'block';
-        } 
-        else {
+    document.addEventListener('DOMContentLoaded', function() {  
+        const userTypeField = document.getElementById('id_user_type');
+        const studentField = document.getElementById('student_field');
+        const officialField = document.getElementById('official_field');
+    
+        function toggleFields() {
             studentField.style.display = 'none';
-        }
-    }
-
-    function toggleOfficialFields() {
-        if (userTypeField.value === 'official') {
-            officialField.style.display = 'block';
-        } 
-        else {
             officialField.style.display = 'none';
+    
+            if (userTypeField.value === 'student') {
+                studentField.style.display = 'block';
+            } 
+            else if (userTypeField.value === 'official') {
+                officialField.style.display = 'block';
+            }
         }
-    }
-  
-    userTypeField.addEventListener('change', toggleStudentFields);
-    userTypeField.addEventListener('change', toggleOfficialFields);
-    toggleStudentFields();  // Call on page load to check initial state
+    
+        userTypeField.addEventListener('change', toggleFields);
+        
+        toggleFields();
+    
+        if (userTypeField.value) {
+            toggleFields();
+        }
+    }); 
 </script>
 {% endblock %}
