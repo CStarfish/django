@@ -1,5 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
+from django.http import JsonResponse
+from django.views.generic import ListView
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
@@ -21,7 +23,7 @@ from django.views import View
 from django.views.generic import (TemplateView, FormView)
 
 from .models import *
-from .models import (User, Profile, Policy, Event, PoliticalParty, Candidate, Candidate)
+from .models import (User, Profile, Policy, Event, PoliticalParty, Candidate, Candidate, Follow, UserUpdate)
 
 from .forms import *
 
@@ -423,3 +425,28 @@ class ProfilePageView(View):
         rating.save()
 
         return redirect('profile_page', user_id=candidate.user_id)
+    
+    # View to follow a candidate ro  event
+def FollowView(request, candidate_id=None, event_id=None):
+    if candidate_id:
+        candidate = get_object_or_404(Candidate, pk=candidate_id)
+        Follow.objects.get_or_create(user=request.user, candidate=candidate)
+        messages.success(request, f"You are now following {candidate}.")
+    elif event_id:
+        event = get_object_or_404(Event, pk=event_id)
+        Follow.objects.get_or_create(user=request.user, event=event)
+        messages.success(request, f"You are now following {event}.")
+        
+    return redirect('profile', user_id=request.user);
+
+    # View to unfollow
+def UnfollowView(request, candidate_id=None, event_id=None):
+    if candidate_id:
+        candidate = get_object_or_404(Candidate, pk=candidate_id)
+        Follow.objects.filter(user=request.user, candidate=candidate).delete()
+        messages.success(request, f"You have unfollowed {candidate}.")
+    elif event_id:
+        event = get_object_or_404(Event, pk=event_id)
+        Follow.objects.filter(user=request.user, event=event)
+        messages.success(request, f"You have unfollowed {event}.")
+    return redirect('profile', user_id=request.user.id)
