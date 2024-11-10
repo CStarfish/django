@@ -80,5 +80,36 @@
         </ul>
     {% endif %}
 
+    <h2>Followed Candidates</h2>
+    <ul>
+        {% for follow in user.follows.all %}
+            {% if follow.candidate %}
+                <li>
+                    <a href="{% url 'profile_page' follow.candidate.user.user.id %}">
+                            {{ follow.candidate.user.user.fist_name}} {{ follow.candidate.user.user.last_name }}</a>
+                </li>
+            {% endif %}
+        {% empty %}
+            <p>No followed candidates</p>
+        {% endfor %}
+     </ul>
+
+     <h2>Followed Events</h2>
+     <ul>
+        {% for follow in user.follows.all %}
+            {% if follow.event %}
+                <li>
+                    <a href = {% url 'event_page' follow.event.event_id %}>{{folow.event.name}}</a>
+                </li>
+                <ul>Location: {{ follow.event.location }}</ul>
+                <ul>Starts on: {{ follow.event.start }}</ul>
+                <ul>End on: {{ follow.event.end }}</ul>
+                <ul>Description: {{ follow.event.desc }}</ul>
+            {% endif %}
+            {% empty %}
+                <p>No followed events.</p>
+        {% endfor %}
+     </ul>
+
 </div>
 {% endblock %}
