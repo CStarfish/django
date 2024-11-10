@@ -61,17 +61,20 @@
 <section class="featured-section container mt-5">
   <h2 class="text-center">Featured Candidates / Policies</h2>
   <div class="row justify-content-center">
+    {% if candidate %}
     <div class="card col-md-3 m-3">
       <img
-        src="https://via.placeholder.com/150"
+        src="{{ candidate.profile.profile_picture.url}}"
         class="card-img-top"
         alt="Candidate Image"
       />
       <div class="card-body text-center">
-        <h3 class="card-title">Candidate Name</h3>
-        <button class="btn btn-primary">View Profile</button>
+          <h3 class="card-title">{{ candidate.first_name }} {{ candidate.last_name }}</h3>
+          <p>Username: {{ candidate.username }}</p>
+          <button class="btn btn-primary">View Profile</button>
       </div>
     </div>
+    {% endif %}
     <div class="card col-md-3 m-3">
       <img
         src="https://via.placeholder.com/150"
@@ -79,8 +82,11 @@
         alt="Policy Image"
       />
       <div class="card-body text-center">
-        <h3 class="card-title">Policy Name</h3>
+        {% if policy %}
+        <h3 class="card-title">{{ policy.name }}</h3>
+        <p>From: {{ policy.official.user.first_name}} {{ policy.official.user.last_name}}</p>
         <button class="btn btn-primary">View Details</button>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -89,22 +95,17 @@
 <section class="events-section container my-5">
   <h2 class="text-center">Upcoming Events</h2>
   <div class="row justify-content-center">
+    {% for event in events|slice:":2" %}
     <div class="card col-md-3 m-3">
       <div class="card-body text-center">
-        <h3 class="card-title">Event Name</h3>
-        <p>Date: January 1, 2024</p>
-        <p>Time: 5:00 PM</p>
+        <h3 class="card-title">{{ event.name }}</h3>
+        <p>Location: {{ event.location }}</p>
+        <p>Starts {{ event.start }}</p>
+        <p>Ends {{ event.end }}</p>
         <button class="btn btn-primary">Learn More</button>
       </div>
     </div>
-    <div class="card col-md-3 m-3">
-      <div class="card-body text-center">
-        <h3 class="card-title">Event Name</h3>
-        <p>Date: February 15, 2024</p>
-        <p>Time: 3:00 PM</p>
-        <button class="btn btn-primary">Learn More</button>
-      </div>
-    </div>
+    {% endfor %}
   </div>
 </section>
 

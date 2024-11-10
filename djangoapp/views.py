@@ -10,6 +10,7 @@ from django.contrib.auth.views import (PasswordResetView, PasswordChangeView)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from django.utils import timezone
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 
@@ -28,8 +29,19 @@ from .models import (User, Profile, Policy, Event, PoliticalParty, Candidate, Ca
 from .forms import *
 
 # Create your views here.
+# Displays home page
 def HomeView(request):
-    return render(request, 'djangoapp/home.html')
+    # Get current time and filter events where start time is greater than current time
+    now = timezone.now()
+    events = Event.objects.filter(start__gt=now)
+
+    # Gets a random policy and candidate to feature
+    candidate = User.objects.filter(is_candidate=True).order_by('?').first()
+    policy = Policy.objects.order_by('?').first()
+    return render(request, 'djangoapp/home.html', {"events": events,
+                                                   "candidate": candidate,
+                                                   "policy": policy
+                                                   })
 
 
 def AboutView(request):
