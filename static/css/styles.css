@@ -3,9 +3,6 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
-}
-
-body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     color: #333;
@@ -238,32 +235,32 @@ footer ul li a:hover {
 }
 
 .star-rating input[type="radio"] {
-    display: none;  /* Hide the original radio buttons */
+    display: none;
 }
 
 .star-rating label {
-    color: #ccc;       /* Default color for unselected stars */
+    color: #ccc;
     cursor: pointer;
-    padding: 0 5px;    /* Space between stars */
-    margin: 0;  /* Remove any unwanted margin */
+    padding: 0 5px;
+    margin: 0;
 }
 
 .star-rating label:before {
-    content: "\f005";  /* Unicode for FontAwesome star icon */
+    content: "\f005";
     font-family: FontAwesome;
 }
 
 /* Highlight selected star and all previous stars on click */
 .star-rating label:hover,
 .star-rating label:hover ~ label {
-    color: #ffc107;  /* Gold color for selected and hovered stars */
+    color: #ffc107;
 }
 
 .star-rating input[type="radio"]:checked ~ label {
-    color: #ffc107;  /* Gold color for all previous stars */
+    color: #ffc107;
 }
 
 /* Make sure all stars up to the clicked one stay highlighted */
 .star-rating input[type="radio"]:checked + label {
-    color: #ffc107;  /* Gold color for all previous stars */
+    color: #ffc107; 
 }

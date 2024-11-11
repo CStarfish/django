@@ -47,6 +47,35 @@ def HomeView(request):
 def AboutView(request):
     return render(request, 'djangoapp/index.html')
 
+
+def About1View(request):
+    return render(request, 'djangoapp/jly.html')
+
+
+def About2View(request):
+    return render(request, 'djangoapp/jwong.html')
+
+
+def About3View(request):
+    return render(request, 'djangoapp/erik.html')
+
+
+def About4View(request):
+    return render(request, 'djangoapp/bilguun.html')
+
+
+def About5View(request):
+    return render(request, 'djangoapp/haolongd.html')
+
+
+def About6View(request):
+    return render(request, 'djangoapp/pablo.html')
+
+
+def About7View(request):
+    return render(request, 'djangoapp/madhura.html')
+
+
 # register page
 # Displays register form and sends form data to the RegistrationForm
 class RegisterView(FormView):

@@ -26,6 +26,15 @@ urlpatterns = [
     path('', RedirectView.as_view(url='home/', permanent=True)),
     path('home/', views.HomeView, name='home'),
     path('about/', views.AboutView, name='about'),
+    # Views for about page
+    path('about/jly.html/', views.About1View, name='about1'),
+    path('about/jwong.html/', views.About2View, name='about2'),
+    path('about/erik.html/', views.About3View, name='about3'),
+    path('about/bilgunn.html/', views.About4View, name='about4'),
+    path('about/haolongd.html/', views.About5View, name='about5'),
+    path('about/pablo.html/', views.About6View, name='about6'),
+    path('about/madhura.html/', views.About7View, name='about7'),
+
     path('admin/', admin.site.urls),
     path('search/', views.SearchView.as_view(), name='search'),
     path('results/', views.ResultsView, name='results'),
