@@ -82,9 +82,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'website',
-         'USER': 'jly',
+        'USER': 'jly',
         #'USER': 'root',  # for local
-         'PASSWORD': 'CSC648@Server',
+        'PASSWORD': 'CSC648@Server',
         #'PASSWORD': '1234',  # for local
         'HOST': '127.0.0.1',
         #'HOST': 'localhost',  # for local
