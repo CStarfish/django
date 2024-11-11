@@ -4,6 +4,7 @@
 <div class="container">
     <!-- Display general user information -->
     <h1>{{ user.first_name }} {{ user.last_name }}'s Profile</h1>
+    <p>Username: {{ user.username }}</p>
     {% if user.is_student %}
         <p>Student User</p>
     {% elif user.is_candidate %}
