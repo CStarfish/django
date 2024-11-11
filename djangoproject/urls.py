@@ -66,6 +66,7 @@ urlpatterns = [
     path('policy_page/<int:policy_id>', views.PolicyPageView, name='policy_page'),
     path('event_creation/', views.EventCreationView.as_view(), name='event_creation'),
     path('event_page/<int:event_id>', views.EventPageView, name='event_page'),
+    path('election_office/<int:user_id>', views.ElectionOfficeView, name='election_office'),
     path('polling_creation/', views.PollingCreationView.as_view(), name='polling_creation'),
     path('polling_location/<int:polling_location_id>', views.PollingLocationView, name='polling_location')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

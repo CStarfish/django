@@ -56,19 +56,31 @@
             </ul>
         {% endif %}
 
-        <!-- {% if political_party.exists %}
-            Display Political Parties
-            <strong>Political Parties:</strong>
+        {% if election_offices.exists %}
+            <!-- Display Election Offices -->
+            <strong>Election Offices:</strong>
             <ul>
-                {% for party in political_party.all %}
-                    <li>{{ party.name }} - {{ party.member_count }}</li>
+                {% for election_office in election_offices.all %}
+                    <li><a href="{% url 'election_office' election_office.user_id %}">{{ election_office.location }}</a></li>
                 {% empty %}
-                    <li>No political parties match.</li>
+                    <li>No election offices match.</li>
                 {% endfor %}
             </ul>
-        {% endif %}-->
+        {% endif %}
 
-        {% if not users.exists and not policies.exists and not events.exists %}
+        {% if polling_locations.exists %}
+            <!-- Display Events -->
+            <strong>Events:</strong>
+            <ul>
+                {% for polling_location in polling_locations.all %}
+                    <li><a href="{% url 'polling_location' polling_location.polling_location_id %}">{{ polling_location.name }} - {{ polling_location.location }}</a></li>
+                {% empty %}
+                    <li>No polling locations match.</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if not users.exists and not policies.exists and not events.exists and not election_offices.exists and not polling_locations.exists%}
             <li>No results found...</li>
         {% endif %}
     </ul>

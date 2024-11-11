@@ -148,6 +148,8 @@ class SearchForm(forms.Form):
         ('events', 'Events'),
         ('policies', 'Policies'),
         ('candidates', 'Candidates'),
+        ('election offices', 'Election Offices'),
+        ('polling locations', 'Polling Locations')
     ]
     
     filter1 = forms.ChoiceField(
@@ -175,13 +177,35 @@ class PolicyCreationForm(forms.ModelForm):
 
 class EventCreationForm(forms.ModelForm):
     name = forms.CharField()
-    address = forms.CharField()
+    location = forms.CharField()
     start = forms.DateTimeField()
     end = forms.DateTimeField()
     desc = forms.TextInput()
     class Meta:
         model = Event
         fields = ['name', 'location', 'start', 'end', 'desc']
+
+    # Ensure getting coordinates location returns a valid address
+        def clean_location(self):
+            location = self.cleaned_data.get('location')
+            mapbox_token = 'pk.eyJ1IjoiY3N0YXJmaXNoIiwiYSI6ImNtM2NobHBpbTF2cGkyaW9sbWgyYjhlYXYifQ.iI1fAgnb4qUJ7J2JmecpYA'
+
+            # Request location data from Mapbox API
+            response = requests.get(
+                f'https://api.mapbox.com/geocoding/v5/mapbox.places/{location}.json',
+                params={'access_token': mapbox_token}
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+
+                # Check if the result count is too vague or ambiguous
+                if len(data['features']) > 1:
+                    raise ValidationError("Location is too vague. Please enter a more precise address.")
+                elif len(data['features']) == 0:
+                    raise ValidationError("Could not find this location. Please enter a valid location.")
+        
+            return location
 
 
 class RatingForm(forms.ModelForm):
@@ -214,3 +238,25 @@ class PollingLocationForm(forms.ModelForm):
         location = forms.CharField()
         contact_info = forms.CharField()
         location_picture = forms.ImageField(widget = forms.FileInput(attrs={'class': 'form-control-file'}))
+
+        # Ensure getting coordinates location returns a valid address
+        def clean_location(self):
+            location = self.cleaned_data.get('location')
+            mapbox_token = 'pk.eyJ1IjoiY3N0YXJmaXNoIiwiYSI6ImNtM2NobHBpbTF2cGkyaW9sbWgyYjhlYXYifQ.iI1fAgnb4qUJ7J2JmecpYA'
+
+            # Request location data from Mapbox API
+            response = requests.get(
+                f'https://api.mapbox.com/geocoding/v5/mapbox.places/{location}.json',
+                params={'access_token': mapbox_token}
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+
+                # Check if the result count is too vague or ambiguous
+                if len(data['features']) > 1:
+                    raise ValidationError("Location is too vague. Please enter a more precise address.")
+                elif len(data['features']) == 0:
+                    raise ValidationError("Could not find this location. Please enter a valid location.")
+        
+            return location

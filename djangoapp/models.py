@@ -5,6 +5,8 @@ from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser
 from PIL import Image, ImageOps
 
+import requests
+
 #import your models here
 class PoliticalParty(models.Model):
     political_party_id = models.AutoField(primary_key=True)
@@ -231,7 +233,9 @@ class Event(models.Model):
         related_name ='events'
     )
     name = models.CharField(max_length=45, null=True, blank=True)
-    location = models.CharField(max_length=90, null=True, blank=True)
+    location = models.CharField(max_length=255, null=True, blank=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     official_count = models.IntegerField(null=True, blank=True, default=0)
     start = models.DateTimeField(null=True, blank=True)
     end = models.DateTimeField(null=True, blank=True)
@@ -242,6 +246,31 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name or f"Event {self.event_id}"
+    
+    def save(self, *args, **kwargs):
+        if self.location:
+            try:
+                # Pass location field in polling location model to the Mapbox API
+                response = requests.get(
+                    'https://api.mapbox.com/geocoding/v5/mapbox.places/{0}.json'.format(self.location),
+                    params={'access_token': 'pk.eyJ1IjoiY3N0YXJmaXNoIiwiYSI6ImNtM2NobHBpbTF2cGkyaW9sbWgyYjhlYXYifQ.iI1fAgnb4qUJ7J2JmecpYA'}
+                )
+                if response.status_code == 200:
+                    data = response.json()
+
+                    # if the geocoding results have features, get the first result
+                    if data['features']:
+                        coordinates = data['features'][0]['geometry']['coordinates']
+                        self.longitude = coordinates[0]
+                        self.latitude = coordinates[1]
+                    else:
+                        print(f"No geocoding results for {self.location}")
+                else:
+                    print(f"Mapbox geocoding request failed: {response.status_code}")
+            except Exception as e:
+                print(f"Error fetching coordinates: {e}")
+
+        super().save(*args, **kwargs)
 
 #TO DO: Allow admin access to create election offices
 class ElectionOffice(models.Model):
@@ -250,7 +279,10 @@ class ElectionOffice(models.Model):
         on_delete = models.CASCADE,
         primary_key = True
     )
-    location = models.CharField(max_length=90, null=True, blank=True)
+    name = models.CharField(max_length=90, null=True, blank=True)
+    location = models.CharField(max_length=255, null=True, blank=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     approved = models.BooleanField(default=False)
 
     class Meta:
@@ -258,6 +290,31 @@ class ElectionOffice(models.Model):
 
     def __str__(self):
         return self.location or f"Election Office {self.user.user.username}"
+    
+    def save(self, *args, **kwargs):
+        if self.location:
+            try:
+                # Pass location field in polling location model to the Mapbox API
+                response = requests.get(
+                    'https://api.mapbox.com/geocoding/v5/mapbox.places/{0}.json'.format(self.location),
+                    params={'access_token': 'pk.eyJ1IjoiY3N0YXJmaXNoIiwiYSI6ImNtM2NobHBpbTF2cGkyaW9sbWgyYjhlYXYifQ.iI1fAgnb4qUJ7J2JmecpYA'}
+                )
+                if response.status_code == 200:
+                    data = response.json()
+
+                    # if the geocoding results have features, get the first result
+                    if data['features']:
+                        coordinates = data['features'][0]['geometry']['coordinates']
+                        self.longitude = coordinates[0]
+                        self.latitude = coordinates[1]
+                    else:
+                        print(f"No geocoding results for {self.location}")
+                else:
+                    print(f"Mapbox geocoding request failed: {response.status_code}")
+            except Exception as e:
+                print(f"Error fetching coordinates: {e}")
+
+        super().save(*args, **kwargs)
     
 
 class PollingLocation(models.Model):
@@ -268,7 +325,9 @@ class PollingLocation(models.Model):
         related_name = 'polling_location'
     )
     name = models.CharField(max_length=90, null=True, blank=True)
-    location = models.CharField(max_length=90, null=True, blank=True)
+    location = models.CharField(max_length=255, null=True, blank=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     contact_info = models.CharField(max_length=255, null=True, blank=True)
     location_picture = models.ImageField(default='default.jpg', upload_to='profile_images')
 
@@ -280,20 +339,42 @@ class PollingLocation(models.Model):
     
     # resizing images taken from profile
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-        img = Image.open(self.profile_picture.path)
+        img = Image.open(self.location_picture.path)
 
         if img.height > 150 or img.width > 150:
             new_img = (150, 150)
             img.thumbnail(new_img)
-            img.save(self.profile_picture.path, format='JPEG')  # Specify the format if needed
+            img.save(self.location_picture.path, format='JPEG')  # Specify the format if needed
         elif img.height < 150 or img.width < 150:
-            img = Image.open(self.profile_picture.path)
+            img = Image.open(self.location_picture.path)
             img.thumbnail((150, 150), Image.LANCZOS)
             new_img = Image.new('RGB', (150, 150), (255, 255, 255))  # White background
             new_img.paste(img, ((150 - img.width) // 2, (150 - img.height) // 2))  # Center the image
-            new_img.save(self.profile_picture.path, format='JPEG')  # Specify the format if needed
+            new_img.save(self.location_picture.path, format='JPEG')  # Specify the format if needed
+
+        if self.location:
+            try:
+                # Pass location field in polling location model to the Mapbox API
+                response = requests.get(
+                    'https://api.mapbox.com/geocoding/v5/mapbox.places/{0}.json'.format(self.location),
+                    params={'access_token': 'pk.eyJ1IjoiY3N0YXJmaXNoIiwiYSI6ImNtM2NobHBpbTF2cGkyaW9sbWgyYjhlYXYifQ.iI1fAgnb4qUJ7J2JmecpYA'}
+                )
+                if response.status_code == 200:
+                    data = response.json()
+
+                    # if the geocoding results have features, get the first result
+                    if data['features']:
+                        coordinates = data['features'][0]['geometry']['coordinates']
+                        self.longitude = coordinates[0]
+                        self.latitude = coordinates[1]
+                    else:
+                        print(f"No geocoding results for {self.location}")
+                else:
+                    print(f"Mapbox geocoding request failed: {response.status_code}")
+            except Exception as e:
+                print(f"Error fetching coordinates: {e}")
+
+        super().save(*args, **kwargs)
 
 
 class Rating(models.Model):

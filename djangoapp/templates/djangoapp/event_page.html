@@ -2,7 +2,7 @@
 {% block title %} Event {% endblock%}
 
 {% block content%}
-<div class = "container">
+<div class="container">
     <h1>{{ event.name }}</h1>
     <p><strong>Created by:</strong> 
         <a href="{% url 'profile_page' event.official.user.id %}">
@@ -12,5 +12,6 @@
     <p><strong>{{ event.location }}</strong></p>
     <p>Starts on {{ event.start }}, Ends on {{ event.end }}</p>
     <p>{{ event.desc }}</p>
+    {% include 'djangoapp/mapapi.html' with longitude=event.longitude latitude=event.latitude %}
 </div>
 {% endblock %}

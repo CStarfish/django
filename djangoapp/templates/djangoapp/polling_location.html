@@ -11,8 +11,7 @@
     </p>
     <p><strong>{{ polling_location.name }}</strong></p>
     <p><strong>{{ polling_location.location }}</strong></p>
+    {% include 'djangoapp/mapapi.html' with longitude=polling_location.longitude latitude=polling_location.latitude %}
     <img src="{{ polling_location.location_picture.url }}" class="card-img-top" alt="Location Image"/>
-    <!--ADD EXAMPLE PHOTO FOR LOCATION HERE-->
-    <!--Embed example link to some office address on Google Maps-->
 </div>
 {% endblock %}

@@ -214,6 +214,9 @@ class SearchView(FormView):
         users = None
         policies = None
         events = None
+        election_offices = None
+        polling_locations = None
+
         match filter1:
             case 'policies':
                 if query:
@@ -230,20 +233,36 @@ class SearchView(FormView):
                     users = User.objects.filter(is_candidate=True, first_name__icontains=query)
                 else:
                     users = User.objects.filter(is_candidate=True)
+            case 'election offices':
+                if query:
+                    election_offices = ElectionOffice.objects.filter(location__icontains=query)
+                else:
+                    election_offices = ElectionOffice.objects.all()
+            case 'polling locations':
+                if query:
+                    polling_locations = PollingLocation.objects.filter(location__icontains=query)
+                else:
+                    polling_locations = PollingLocation.objects.all()
             case _: # Default to full output of every record if no filter is selected
                 if query:
                     users = User.objects.filter(first_name__icontains=query)
                     policies = Policy.objects.filter(name__icontains=query)
                     events = Event.objects.filter(name__icontains=query)
+                    election_offices = ElectionOffice.objects.filter(location__icontains=query)
+                    polling_locations = PollingLocation.objects.filter(location__icontains=query)
                 else:
                     users = User.objects.all()
                     policies = Policy.objects.all()
                     events = Event.objects.all()
+                    election_offices = ElectionOffice.objects.all()
+                    polling_locations = PollingLocation.objects.filter(location__icontains=query)
 
         return render(self.request, self.template_name, {
             "users": users,
             "policies": policies,
             "events": events,
+            "election_offices": election_offices,
+            "polling_locations": polling_locations,
             "query": query
         })
 
@@ -357,6 +376,10 @@ def EventPageView(request, event_id):
     return render(request, 'djangoapp/event_page.html', {'event': event})
 
 
+'''
+View for viewing user profiles, displays all information if possible, including information
+regarding different user types and ratings for that user.
+'''
 class ProfilePageView(View):
     form_class = RatingForm
     template_name = 'djangoapp/profile_page.html'
@@ -421,6 +444,15 @@ class ProfilePageView(View):
         return redirect('profile_page', user_id=candidate.user_id)
     
 
+def ElectionOfficeView(request, user_id):
+    election_office = get_object_or_404(ElectionOffice, user_id=user_id)
+    return render(request, 'djangoapp/election_office.html', {"election_office": election_office})
+
+
+'''
+View for creating Polling locations, only accessible by officials associated with election offices
+This can be achieve by adding officials to Election Office in admin and approving them
+'''
 class PollingCreationView(LoginRequiredMixin, FormView):
     form_class = PollingLocationForm
     template_name = 'djangoapp/polling_creation.html'

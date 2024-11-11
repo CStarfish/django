@@ -1,0 +1,11 @@
+{% extends "djangoapp/base.html" %}
+{% block title %} Election office {% endblock%}
+
+{% block content%}
+<div class="container">
+    <h1>{{ election_office.name }}</h1>
+    <p><strong>Located at: {{ election_office.location }}</strong></p>
+    <p>Contact Info: {{ election_office.contact_info}}</p>
+    {% include 'djangoapp/mapapi.html' with longitude=election_office.longitude latitude=election_office.latitude %}
+</div>
+{% endblock %}
