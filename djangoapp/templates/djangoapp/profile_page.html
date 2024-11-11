@@ -86,7 +86,8 @@
             {% if follow.candidate %}
                 <li>
                     <a href="{% url 'profile_page' follow.candidate.user.user.id %}">
-                            {{ follow.candidate.user.user.fist_name}} {{ follow.candidate.user.user.last_name }}</a>
+                        {{ follow.candidate.user.user.fist_name}} {{ follow.candidate.user.user.last_name }}
+                    </a>
                 </li>
             {% endif %}
         {% empty %}
@@ -99,7 +100,7 @@
         {% for follow in user.follows.all %}
             {% if follow.event %}
                 <li>
-                    <a href = {% url 'event_page' follow.event.event_id %}>{{folow.event.name}}</a>
+                    <a href="{% url 'event_page' follow.event.event_id %}"">{{folow.event.name}}</a>
                 </li>
                 <ul>Location: {{ follow.event.location }}</ul>
                 <ul>Starts on: {{ follow.event.start }}</ul>

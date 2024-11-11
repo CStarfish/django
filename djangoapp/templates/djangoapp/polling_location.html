@@ -1,0 +1,18 @@
+{% extends "djangoapp/base.html" %}
+{% block title %} Polling Location {% endblock%}
+{% load static %}
+{% block content%}
+<div class = "container">
+    <h1>{{ polling_location.name }}</h1>
+    <p><strong>Created by:</strong>
+        <a href="{% url 'profile_page' polling_location.office.user.user.id %}">
+            {{ polling_location.office.user.user.first_name }} {{ polling_location.office.user.user.last_name }} 
+        </a>
+    </p>
+    <p><strong>{{ polling_location.name }}</strong></p>
+    <p><strong>{{ polling_location.location }}</strong></p>
+    <img src="{{ polling_location.location_picture.url }}" class="card-img-top" alt="Location Image"/>
+    <!--ADD EXAMPLE PHOTO FOR LOCATION HERE-->
+    <!--Embed example link to some office address on Google Maps-->
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "djangoapp/base.html" %}
+{% block title %} Polling Location Creation Page {% endblock title%}
+{% load static %}
+{% block content%}
+<div class = 'container'>
+    <form method="POST" action="{% url 'polling_creation' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- Include error messages -->
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                <ul>
+                    {% for field, errors in form.items %}
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <!-- Campaign Details -->
+        <fieldset>
+            <legend>Add Polling Location</legend>
+            <div>
+                <label for="polling_name">Name:</label>
+                <p>{{ form.name }}</p>
+            </div>
+            <div>
+                <label for="polling_location">Address:</label>
+                <p>{{ form.location }}</p>
+            </div>
+            <div>
+                <label for="polling_location">Contract info:</label>
+                <p>{{ form.contact_info }}</p>
+            </div>
+            <div>
+                <label class="small mb-1">Upload location picture (optional):</label>
+                <p>{{ form.location_picture }}</p>
+            </div>
+        </fieldset>
+        <div>
+            <button type="submit">Create</button>
+        </div>
+</form>
+</div>
+{% endblock %}

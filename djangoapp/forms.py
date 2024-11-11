@@ -8,8 +8,6 @@ from djangoapp.models import *
 from djangoapp.models import PoliticalParty
 
 
-
-
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
     user_type = forms.ChoiceField(
@@ -26,9 +24,9 @@ class RegistrationForm(UserCreationForm):
     ]
 
     political_party = forms.ModelChoiceField(
-        queryset=PoliticalParty.objects.all(),
-        empty_label="Select a party",
-        required=False
+        queryset = PoliticalParty.objects.all(),
+        empty_label = "Select a party",
+        required = False
     )
     state = forms.CharField(required=False)
 
@@ -177,7 +175,7 @@ class PolicyCreationForm(forms.ModelForm):
 
 class EventCreationForm(forms.ModelForm):
     name = forms.CharField()
-    location = forms.CharField()
+    address = forms.CharField()
     start = forms.DateTimeField()
     end = forms.DateTimeField()
     desc = forms.TextInput()
@@ -188,7 +186,7 @@ class EventCreationForm(forms.ModelForm):
 
 class RatingForm(forms.ModelForm):
     class Meta:
-        model=Rating
+        model = Rating
         fields = ['rating', 'desc']
 
     RATING_NUMBER = [
@@ -205,3 +203,14 @@ class RatingForm(forms.ModelForm):
         label="Rating"
     )
     desc = forms.TextInput()
+
+
+class PollingLocationForm(forms.ModelForm):
+    class Meta:
+        model = PollingLocation
+        fields = ['name', 'location', 'contact_info', 'location_picture']
+
+        name = forms.CharField()
+        location = forms.CharField()
+        contact_info = forms.CharField()
+        location_picture = forms.ImageField(widget = forms.FileInput(attrs={'class': 'form-control-file'}))

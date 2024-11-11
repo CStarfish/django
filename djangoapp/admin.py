@@ -59,7 +59,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('date_of_birth',)}),
+        ('Personal info', {'fields': ('date_of_birth','political_party')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -102,19 +102,36 @@ class ElectionOfficeForm(forms.ModelForm):
     # Need to confirm if UserAdmin can create ElectionOfficeForm, see below
     class Meta:
         model = ElectionOffice
-        fields = ['user', 'location'] #'user' = election office name
+        fields = ['user', 'location', 'approved'] #'user' = official tied to election office
 
 
 class ElectionOfficeAdmin(admin.ModelAdmin):    # Custom admin for ElectionOffice
     form = ElectionOfficeForm  
-    list_display = ('user', 'location')
+    list_display = ('user', 'location', 'approved')
+    list_filter = ('approved',)
     search_fields = ('user', 'location') #add more fields as needed
-    ordering = ('user') 
+    ordering = ('user',) 
+
+    actions = ['approve_election_office']
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        # Check if the official is being approved and set is_election_office variable in user to true if so
+        if obj.approved:
+            user = obj.user.user
+            user.is_election_office = obj.approved
+            user.save()
+
+    def approve_election_office(self, request, queryset):
+        queryset.update(approved=True)
+        self.message_user(request, "Selected officials have been approved to manage election office.")
+    approve_election_office.short_description = "Approve election office"
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
 admin.site.register(Candidate, CandidacyAdmin)
-admin.site.register(ElectionOffice) 
+admin.site.register(ElectionOffice, ElectionOfficeAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

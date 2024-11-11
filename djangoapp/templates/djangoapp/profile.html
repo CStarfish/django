@@ -42,6 +42,9 @@
             <a href="{% url 'policy_creation' %}">Create Policy</a>
             <a href="{% url 'event_creation' %}">Create Event</a>
         {% endif %}
+        {% if user.is_election_office %}
+            <a href="{% url 'polling_creation' %}">Add Polling Location</a>
+        {% endif %}
     </form>
 </div>
 {% endblock %}

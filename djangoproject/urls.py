@@ -37,7 +37,6 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('search/', views.SearchView.as_view(), name='search'),
-    path('results/', views.ResultsView, name='results'),
     path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView, name='logout'),
     path('password_reset/', views.ResetPasswordView.as_view(), name='password_reset'),
@@ -58,8 +57,6 @@ urlpatterns = [
     path('register/', views.RegisterView.as_view(), name='register'),
     path('profile/<int:user_id>', views.ProfileView.as_view(), name='profile'),
     path('candidacy/', views.CandidacyView.as_view(), name='candidacy'),
-    path('search/', views.SearchView.as_view(), name='search'),
-    path('results/', views.ResultsView, name='results'),
     path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView, name='logout'),
     path('register/', views.RegisterView.as_view(), name='register'),
@@ -68,5 +65,7 @@ urlpatterns = [
     path('policy_creation/', views.PolicyCreationView.as_view(), name='policy_creation'),
     path('policy_page/<int:policy_id>', views.PolicyPageView, name='policy_page'),
     path('event_creation/', views.EventCreationView.as_view(), name='event_creation'),
-    path('event_page/<int:event_id>', views.EventPageView, name='event_page')
+    path('event_page/<int:event_id>', views.EventPageView, name='event_page'),
+    path('polling_creation/', views.PollingCreationView.as_view(), name='polling_creation'),
+    path('polling_location/<int:polling_location_id>', views.PollingLocationView, name='polling_location')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

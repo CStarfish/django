@@ -248,53 +248,6 @@ class SearchView(FormView):
         })
 
 
-# Output results of search with filter used
-# CURRENTLY UNUSED
-def ResultsView(request):
-    query = request.GET.get('search')
-    filter = request.GET.get('filter1')
-
-    print(f"Filter value: {filter}")
-
-    # Initialize holders for search results
-    users = None
-    policies = None
-    events = None
-    political_party = None
-
-    # Use switch statement to determine which filter to use
-    match filter:
-        case 'policies':
-            if query:
-                policies = Policy.objects.filter(name__icontains=query)
-            else:
-                policies = Policy.objects.all()
-        case 'events':
-            if query:
-                events = Event.objects.filter(name__icontains=query)
-            else:
-                events = Event.objects.all()
-        case 'candidate':
-            if query:
-                users = User.objects.filter(is_candidate=True, name__icontains=query)
-            else:
-                users = User.objects.filter(is_candidate=True)
-        case _: # Default to full output of every record if no filter is selected
-            if query:
-                users = User.objects.filter(official__user__first_name__icontains=query)
-                policies = Policy.objects.filter(name__icontains=query)
-                events = Event.objects.filter(name__icontains=query)
-            else:
-                users = User.objects.all()
-                policies = Policy.objects.all()
-                events = Event.objects.all()
-    
-    return render(request, 'djangoapp/results.html', {"users": users,
-                                                      "policies": policies,
-                                                      "events": events,
-                                                      "query": query})
-    #candidates = Candidate.objects.select_related('official_user')
-
 # Handlers for candidacy, policy, and event creation
 # Display forms for creating candidacies, policies, and events
 # then sends forms for page generation
@@ -467,7 +420,44 @@ class ProfilePageView(View):
 
         return redirect('profile_page', user_id=candidate.user_id)
     
-    # View to follow a candidate ro  event
+
+class PollingCreationView(LoginRequiredMixin, FormView):
+    form_class = PollingLocationForm
+    template_name = 'djangoapp/polling_creation.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the logged-in user is allowed to access election office content
+        if not hasattr(request.user, 'is_election_office'):
+            messages.error(request, "You do not have permission to access this page.")
+            return redirect('profile') 
+        return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        polling_location = form.save(commit=False)
+
+        office = ElectionOffice.objects.get(user_id=self.request.user.id)
+        polling_location.office = office
+        polling_location.save()
+
+        self.polling_location_id = polling_location.polling_location_id
+
+        messages.success(self.request, "The polling location has been posted.")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "There was an error with the polling location information.")
+        return super().form_invalid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('polling_location', args=[self.polling_location_id])
+    
+
+def PollingLocationView(request, polling_location_id):
+    polling_location = get_object_or_404(PollingLocation, polling_location_id=polling_location_id)
+    return render(request, 'djangoapp/polling_location.html', {'polling_location': polling_location})
+
+
+# View to follow a candidate or event
 def FollowView(request, candidate_id=None, event_id=None):
     if candidate_id:
         candidate = get_object_or_404(Candidate, pk=candidate_id)

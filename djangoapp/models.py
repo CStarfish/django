@@ -76,6 +76,7 @@ class User(AbstractBaseUser):
     is_student = models.BooleanField(default=False)
     is_official = models.BooleanField(default=False)
     is_candidate = models.BooleanField(default=False)
+    is_election_office = models.BooleanField(default=False)
     political_party = models.ForeignKey(
         PoliticalParty,
         on_delete = models.DO_NOTHING,
@@ -250,6 +251,7 @@ class ElectionOffice(models.Model):
         primary_key = True
     )
     location = models.CharField(max_length=90, null=True, blank=True)
+    approved = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'Election Office'
@@ -260,20 +262,38 @@ class ElectionOffice(models.Model):
 
 class PollingLocation(models.Model):
     polling_location_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(
+    office = models.ForeignKey(
         ElectionOffice,
         on_delete = models.DO_NOTHING,
         related_name = 'polling_location'
     )
     name = models.CharField(max_length=90, null=True, blank=True)
     location = models.CharField(max_length=90, null=True, blank=True)
-
+    contact_info = models.CharField(max_length=255, null=True, blank=True)
+    location_picture = models.ImageField(default='default.jpg', upload_to='profile_images')
 
     class Meta:
         db_table = 'Polling Location'
 
     def __str__(self):
         return self
+    
+    # resizing images taken from profile
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.profile_picture.path)
+
+        if img.height > 150 or img.width > 150:
+            new_img = (150, 150)
+            img.thumbnail(new_img)
+            img.save(self.profile_picture.path, format='JPEG')  # Specify the format if needed
+        elif img.height < 150 or img.width < 150:
+            img = Image.open(self.profile_picture.path)
+            img.thumbnail((150, 150), Image.LANCZOS)
+            new_img = Image.new('RGB', (150, 150), (255, 255, 255))  # White background
+            new_img.paste(img, ((150 - img.width) // 2, (150 - img.height) // 2))  # Center the image
+            new_img.save(self.profile_picture.path, format='JPEG')  # Specify the format if needed
 
 
 class Rating(models.Model):
@@ -347,7 +367,9 @@ class Follow(models.Model):
         
     def __str__(self):
         return f"{self.user.username} follows {self.candidate or self.event}"
-    # store updates related to candidates or events
+    
+
+# store updates related to candidates or events
 class Update(models.Model):
     candidate = models.ForeignKey(
         Candidate,
@@ -371,6 +393,7 @@ class Update(models.Model):
     def __str__(self):
         return f"Update: {self.title} for {self.candidate or self.event}"
     
+
 class UserUpdate(models.Model):
     user = models.ForeignKey(
         User,

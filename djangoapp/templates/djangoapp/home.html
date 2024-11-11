@@ -25,20 +25,18 @@
       placeholder="Search candidates, policies, or events..."
     />
     <button class="btn btn-primary" type="submit">Search</button>
-  </form>
 </div>
 
 <!-- Toggleable Filters Section -->
 <div class="filter-section" id="home-filter-section" style="display: none">
-  <form method="GET" action="{% url 'search' %}">
     <label for="filter1" class="form-label">Filter By:</label>
     {{ search_form.filter1 }}
-    <button class="btn btn-primary mt-3" type="submit">Apply Filters</button>
   </form>
 </div>
 
 <!-- Displaying Search Results -->
-<section class="featured-section container">
+<!-- CURRENTLY UN-NEEDED -->
+<!--<section class="featured-section container">
   <h2 class="text-center" style="margin: 3vh">Search Results</h2>
   {% if results %}
   <div class="row justify-content-center">
@@ -55,9 +53,9 @@
   {% else %}
   <p class="text-center">No results found.</p>
   {% endif %}
-</section>
+</section>-->
 
-<!-- Default Sections if No Search is Performed -->
+<!-- Featured Sections -->
 <section class="featured-section container mt-5">
   <h2 class="text-center">Featured Candidates / Policies</h2>
   <div class="row justify-content-center">
@@ -75,6 +73,7 @@
       </div>
     </div>
     {% endif %}
+    {% if policy %}
     <div class="card col-md-3 m-3">
       <img
         src="https://via.placeholder.com/150"
@@ -82,13 +81,19 @@
         alt="Policy Image"
       />
       <div class="card-body text-center">
-        {% if policy %}
         <h3 class="card-title">{{ policy.name }}</h3>
         <p>From: {{ policy.official.user.first_name}} {{ policy.official.user.last_name}}</p>
         <button class="btn btn-primary">View Details</button>
-        {% endif %}
       </div>
     </div>
+    {% endif %}
+    {% if not candidate %}
+      {% if not policy %}
+      <div class="card-body text-center">
+        <p>Nothing here yet!</p>
+      </div>
+      {% endif %}
+    {% endif %}
   </div>
 </section>
 
