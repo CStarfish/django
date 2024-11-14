@@ -336,6 +336,7 @@ class PolicyCreationView(LoginRequiredMixin, FormView):
         return reverse_lazy('home')
     
 # Event creation
+# TODO: Allow updating of events via edit
 class EventCreationView(LoginRequiredMixin, FormView):
     template_name = 'djangoapp/event_creation.html'
     form_class = EventCreationForm
@@ -365,6 +366,20 @@ class EventCreationView(LoginRequiredMixin, FormView):
     
     def get_success_url(self):
         return reverse_lazy('event_page', args=[self.event_id])
+    
+    # WILL BE MOVED LATER
+    # INCOMPLETE def 
+    template_name = 'djangoapp/event_page.html'
+    
+    def get(self, request, event_id):
+        if not request.user.is_authenticated:
+            return redirect('djangoapp/login.html')
+        
+        user = get_object_or_404(User, pk=event_id)
+    
+    def post(self, request, event_id):
+        user = get_object_or_404(User, pk=event_id)
+
 
 
 def PolicyPageView(request, policy_id):
