@@ -1,23 +1,23 @@
 {% extends "djangoapp/base.html" %}
-{% block title %} Login Page {% endblock title%}
+{% block title %} Login Page {% endblock title %}
 {% load static %}
 {% block content %}
-    <main>
-        <section class="intro">
-            <h1>Login</h1>
+<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+    <main class="login-page">
+        <section class="login-intro">
+            <h1 class="login-heading">Login</h1>
         </section>
-        <section class="login">
-            <form method="POST">
+        <section class="login-form-container">
+            <form method="POST" class="login-form">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit">Login</button>
+                <button type="submit" class="login-button">Login</button>
             </form>
         </section>
         <div class="register-redirect">
-            <p>Don't have an account?</p>
-            <a href="{% url 'register' %}" class="register_button">Register</a>
+            <p class="redirect-message">Don't have an account?</p>
+            <a href="{% url 'register' %}" class="register-link">Register</a>
         </div>
-        <a href="{% url 'password_reset' %}"><i>Forgot Password?</i></a>
-
+        <a href="{% url 'password_reset' %}" class="forgot-password-link"><i>Forgot Password?</i></a>
     </main>
 {% endblock %}

@@ -52,15 +52,15 @@
         </div>
     </div> -->
     <!-- Displays messages from messages sent through views -->
-    <div class="container">
-        {% if messages %}
+    {% if messages %}
+    <div class="container message-container">
         <div class="messages">
             {% for message in messages %}
                 <div class="alert message alert-{{ message.tags }}">{{ message }}</div>
             {% endfor %}
         </div>
-        {% endif %}
     </div>
+{% endif %}
     {% block content %}{% endblock %}
 
     <!-- Javascripts here if needed -->
