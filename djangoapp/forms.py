@@ -206,6 +206,11 @@ class EventCreationForm(forms.ModelForm):
                     raise ValidationError("Could not find this location. Please enter a valid location.")
         
             return location
+        
+class EventUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['name', 'location', 'start', 'end', 'desc']
 
 
 class RatingForm(forms.ModelForm):

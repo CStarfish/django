@@ -27,6 +27,7 @@ from .models import *
 from .models import (User, Profile, Policy, Event, PoliticalParty, Candidate, Candidate, Follow, UserUpdate)
 
 from .forms import *
+from .forms import (RegistrationForm, LoginForm, UpdateUserForm, UpdateProfileForm, SearchForm, RatingForm, EventUpdateForm)
 
 # Create your views here.
 # Displays home page
@@ -366,29 +367,32 @@ class EventCreationView(LoginRequiredMixin, FormView):
     
     def get_success_url(self):
         return reverse_lazy('event_page', args=[self.event_id])
-    
-    # WILL BE MOVED LATER
-    # INCOMPLETE def 
-    template_name = 'djangoapp/event_page.html'
-    
-    def get(self, request, event_id):
-        if not request.user.is_authenticated:
-            return redirect('djangoapp/login.html')
-        
-        user = get_object_or_404(User, pk=event_id)
-    
-    def post(self, request, event_id):
-        user = get_object_or_404(User, pk=event_id)
-
-
 
 def PolicyPageView(request, policy_id):
     policy = get_object_or_404(Policy, policy_id=policy_id)
     return render(request, 'djangoapp/policy_page.html', {'policy': policy})
 
-def EventPageView(request, event_id):
-    event = get_object_or_404(Event, event_id=event_id)
-    return render(request, 'djangoapp/event_page.html', {'event': event})
+class EventPageView(LoginRequiredMixin, View):
+    template_name = 'djangoapp/event_page.html'
+
+    def get(self, request, event_id):
+        if not request.user.is_authenticated:
+            return redirect('djangoapp/login.html')
+        
+        event = get_object_or_404(Event, event_id=event_id)
+        form = EventUpdateForm(instance=event)
+        return render(request, self.template_name, {
+            'event': event,
+            'form': form,
+            'is_creator': event.official.user == request.user
+        })
+    
+    def post(self, request, event_id):
+        event = get_object_or_404(Event, event_id=event_id)
+        
+
+    #event = get_object_or_404(Event, event_id=event_id)
+    #return render(request, 'djangoapp/event_page.html', {'event': event})
 
 
 '''
