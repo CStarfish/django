@@ -14,9 +14,9 @@
     <p>{{ event.desc }}</p>
     {% include 'djangoapp/mapapi.html' with longitude=event.longitude latitude=event.latitude %}
 
-    {% if is_creator %}
+    {% if is_creator %} <!-- If the user is the creator of the event, they can update it -->
         <h2>Update Event</h2>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="btn btn-primary">Update Event</button>
