@@ -34,7 +34,7 @@
                 <!-- show unfollow button if following-->
                 <form action="{% url 'unfollow' candidate_id=candidate.user_id %}" method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Unfollow</button>
+                    <button type="submit">Unfollow</button>
                 </form>
             {% else %}
                 <!--  show follow button if not following already -->

@@ -9,6 +9,25 @@
         {{ event.official.user.first_name }} {{ event.official.user.last_name }}
         </a>
     </p>
+    <!-- Follow/Unfollow Button -->
+    {% if user.is_candidate or user.is_official or user.is_student%}
+        <div>
+            {% if request.user.follows.filter(event=event).exists %}
+                <!-- show unfollow button if following-->
+                <form action="{% url 'unfollow' event_id=event.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Unfollow</button>
+                </form>
+            {% else %}
+                <!--  show follow button if not following already -->
+                <form action="{% url 'follow' event_id=event_id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Follow</button>
+                </form>
+            {% endif %}
+        </div>
+    {% endif %}
+
     <p><strong>{{ event.location }}</strong></p>
     <p>Starts on {{ event.start }}, Ends on {{ event.end }}</p>
     <p>{{ event.desc }}</p>
