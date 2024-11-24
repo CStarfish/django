@@ -381,7 +381,7 @@ class EventPageView(LoginRequiredMixin, View):
         
         event = get_object_or_404(Event, event_id=event_id)
         form = EventUpdateForm(instance=event)
-        is_creator = event.official.user == request.user or Candidate.objects.filter(user=request.user).exists()
+        is_creator = event.official.user == request.user
         return render(request, self.template_name, {
             'event': event,
             'form': form,
@@ -390,7 +390,7 @@ class EventPageView(LoginRequiredMixin, View):
     
     def post(self, request, event_id):
         event = get_object_or_404(Event, event_id=event_id)
-        is_creator = event.official.user == request.user or Candidate.objects.filter(user=request.user).exists()
+        is_creator = event.official.user == request.user
         if not is_creator:
             messages.error(request, "You do not have permission to edit this event.")
             return redirect('event_page', event_id=event_id)
