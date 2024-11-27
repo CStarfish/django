@@ -1,37 +1,38 @@
-{% extends "djangoapp/base.html" %} {% block title %} Home Page {% endblock %}
+{% extends "djangoapp/base.html" %} 
+{% block title %}Home Page{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-  <h1 class="text-center">Empowering You to Make Informed Choices</h1>
-  <p class="text-center">
-    Welcome to our platform where you can learn about candidates, policies, and
-    upcoming events.
-  </p>
+<!-- Hero Section -->
+<div class="hero">
+    <div class="container">
+        <h1>Empowering You to Make Informed Choices</h1>
+        <p>Welcome to our platform where you can learn about candidates, policies, and upcoming events.</p>
+    </div>
 </div>
 
-<div
-  class="search-bar-nav d-flex justify-content-center align-items-center mx-auto"
->
-  <button id="toggle-filters" class="btn btn-primary me-2">Filters</button>
-  <form
-    method="GET"
-    action="{% url 'search' %}"
-    class="d-flex align-items-center"
-  >
-    <input
-      type="text"
-      name="query"
-      class="form-control me-2"
-      value="{{ search_form.query.value|default:'' }}"
-      placeholder="Search candidates, policies, or events..."
-    />
-    <button class="btn btn-primary" type="submit">Search</button>
-</div>
-
-<!-- Toggleable Filters Section -->
-<div class="filter-section" id="home-filter-section" style="display: none">
-    <label for="filter1" class="form-label">Filter By:</label>
-    {{ search_form.filter1 }}
-  </form>
+<!-- Search Section -->
+<div class="search-container">
+    <div class="search-bar-nav">
+        <form method="GET" action="{% url 'search' %}">
+            <input 
+                type="text" 
+                name="query" 
+                value="{{ search_form.query.value|default:'' }}" 
+                placeholder="Search candidates, policies, or events..."
+            />
+            <button class="btn btn-primary" type="submit">
+                <i class="fa fa-search"></i> Search
+            </button>
+            <button type="button" class="btn btn-outline" id="toggle-filters">
+                <i class="fa fa-filter"></i> Filters
+            </button>
+        </form>
+        
+        <div class="filter-section" id="home-filter-section" style="display: none">
+            <label for="filter1" class="form-label">Filter By:</label>
+            {{ search_form.filter1 }}
+        </div>
+    </div>
 </div>
 
 <!-- Displaying Search Results -->
@@ -55,79 +56,90 @@
   {% endif %}
 </section>-->
 
-<!-- Featured Sections -->
-<section class="featured-section container mt-5">
-  <h2 class="text-center">Featured Candidates / Policies</h2>
-  <div class="row justify-content-center">
-    {% if candidate %}
-    <div class="card col-md-3 m-3">
-      <img
-        src="{{ candidate.profile.profile_picture.url}}"
-        class="card-img-top"
-        alt="Candidate Image"
-      />
-      <div class="card-body text-center">
-          <h3 class="card-title">{{ candidate.first_name }} {{ candidate.last_name }}</h3>
-          <p>Username: {{ candidate.username }}</p>
-          <button class="btn btn-primary" onclick="window.location.href='{% url 'profile_page' candidate.official.user.id %}'">View Profile</button>
-      </div>
+<!-- Featured Section -->
+<section class="featured-section">
+    <div class="container">
+        <h2>Featured Candidates & Policies</h2>
+        <div class="featured-grid">
+            {% if candidate %}
+            <div class="card">
+                <img src="{{ candidate.profile.profile_picture.url }}" 
+                     class="card-image" 
+                     alt="Candidate Image"/>
+                <div class="card-body">
+                    <h3 class="card-title">{{ candidate.first_name }} {{ candidate.last_name }}</h3>
+                    <p class="card-text">Username: {{ candidate.username }}</p>
+                    <button class="btn btn-primary" 
+                            onclick="window.location.href='{% url 'profile_page' candidate.official.user.id %}'">
+                        <i class="fa fa-user"></i> View Profile
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if policy %}
+            <div class="card">
+                <img src="https://via.placeholder.com/150" 
+                     class="card-image" 
+                     alt="Policy Image"/>
+                <div class="card-body">
+                    <h3 class="card-title">{{ policy.name }}</h3>
+                    <p class="card-text">From: {{ policy.official.user.first_name }} {{ policy.official.user.last_name }}</p>
+                    <button class="btn btn-primary" 
+                            onclick="window.location.href='{% url 'policy_page' policy.policy_id %}'">
+                        <i class="fa fa-file-text"></i> View Details
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if not candidate and not policy %}
+            <div class="card-body text-center">
+                <p>Nothing here yet!</p>
+            </div>
+            {% endif %}
+        </div>
     </div>
-    {% endif %}
-    {% if policy %}
-    <div class="card col-md-3 m-3">
-      <img
-        src="https://via.placeholder.com/150"
-        class="card-img-top"
-        alt="Policy Image"
-      />
-      <div class="card-body text-center">
-        <h3 class="card-title">{{ policy.name }}</h3>
-        <p>From: {{ policy.official.user.first_name}} {{ policy.official.user.last_name}}</p>
-        <button class="btn btn-primary" onclick="window.location.href='{% url 'policy_page' policy.policy_id %}'">View Details</button>
-      </div>
-    </div>
-    {% endif %}
-    {% if not candidate %}
-      {% if not policy %}
-      <div class="card-body text-center">
-        <p>Nothing here yet!</p>
-      </div>
-      {% endif %}
-    {% endif %}
-  </div>
 </section>
 
-<section class="events-section container my-5">
-  <h2 class="text-center">Upcoming Events</h2>
-  <div class="row justify-content-center">
-    {% for event in events|slice:":2" %}
-    <div class="card col-md-3 m-3">
-      <div class="card-body text-center">
-        <h3 class="card-title">{{ event.name }}</h3>
-        <p>Location: {{ event.location }}</p>
-        <p>Starts {{ event.start }}</p>
-        <p>Ends {{ event.end }}</p>
-        <button class="btn btn-primary" onclick="window.location.href='{% url 'event_page' event.event_id %}'">Learn More</button>
-      </div>
+<!-- Events Section -->
+<section class="events-section">
+    <div class="container">
+        <h2>Upcoming Events</h2>
+        <div class="featured-grid">
+            {% for event in events|slice:":2" %}
+            <div class="event-card">
+                <h3 class="card-title">{{ event.name }}</h3>
+                <div class="event-info">
+                    <i class="fa fa-map-marker"></i>
+                    <span>{{ event.location }}</span>
+                </div>
+                <div class="event-info">
+                    <i class="fa fa-clock-o"></i>
+                    <span>Starts: {{ event.start }}</span>
+                </div>
+                <div class="event-info">
+                    <i class="fa fa-flag-checkered"></i>
+                    <span>Ends: {{ event.end }}</span>
+                </div>
+                <button class="btn btn-primary" 
+                        onclick="window.location.href='{% url 'event_page' event.event_id %}'">
+                    <i class="fa fa-info-circle"></i> Learn More
+                </button>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-    {% endfor %}
-  </div>
 </section>
 
-<!-- Javascripts here if needed -->
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const toggleButton = document.getElementById("toggle-filters");
-    const filterSection = document.getElementById("home-filter-section");
-
-    toggleButton.addEventListener("click", function () {
-      filterSection.style.display =
-        filterSection.style.display === "none" ||
-        filterSection.style.display === ""
-          ? "block"
-          : "none"; // Toggle filters visibility
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.getElementById('toggle-filters');
+    const filterSection = document.getElementById('home-filter-section');
+    
+    toggleButton.addEventListener('click', function() {
+        filterSection.style.display = filterSection.style.display === 'none' ? 'block' : 'none';
     });
-  });
+});
 </script>
-
 {% endblock %}
