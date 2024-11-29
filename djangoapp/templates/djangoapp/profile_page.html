@@ -26,26 +26,6 @@
         <p>{{ candidate.campaign_name}}: {{ candidate.campaign_details}}</p>
     {% endif %}
 
-    <!-- Follow/Unfollow Button -->
-    {% if user.is_candidate and user.id != request.user.id %}
-        <!-- Only display follow/unfollow button for candidates and not for the logged-in user's own profile -->
-        <div>
-            {% if request.user.follows.filter(candidate=candidate).exists %}
-                <!-- show unfollow button if following-->
-                <form action="{% url 'unfollow' candidate_id=candidate.user_id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Unfollow</button>
-                </form>
-            {% else %}
-                <!--  show follow button if not following already -->
-                <form action="{% url 'follow' candidate_id=candidate.user_id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-primary">Follow</button>
-                </form>
-            {% endif %}
-        </div>
-    {% endif %}
-
     <!-- Display official's policies and events if official -->
     {% if user.is_official %}
         <h2> Policies </h2>

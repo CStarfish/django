@@ -1,6 +1,6 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
-from django.http import JsonResponse
+from django.conf import settings
 from django.views.generic import ListView
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -539,7 +539,8 @@ def FollowView(request, candidate_id=None, event_id=None):
         
     return redirect('profile', user_id=request.user);
 
-    # View to unfollow
+
+# View to unfollow
 def UnfollowView(request, candidate_id=None, event_id=None):
     if candidate_id:
         candidate = get_object_or_404(Candidate, pk=candidate_id)
@@ -550,3 +551,12 @@ def UnfollowView(request, candidate_id=None, event_id=None):
         Follow.objects.filter(user=request.user, event=event)
         messages.success(request, f"You have unfollowed {event}.")
     return redirect('profile', user_id=request.user.id)
+
+
+# View to get mapbox token from .env file
+def get_mapbox_token(request):
+    mapbox_token = getattr(settings, 'MAPBOX_ACCESS_TOKEN', None)
+    if mapbox_token is None:
+        return JsonResponse({'error': 'Mapbox access token not configured.'}, status=400)
+    
+    return JsonResponse({'mapbox_token': mapbox_token})
