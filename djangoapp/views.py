@@ -1,3 +1,5 @@
+import calendar, os
+
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.conf import settings
@@ -14,7 +16,6 @@ from django.utils import timezone
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 
-import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
 
@@ -555,7 +556,7 @@ def UnfollowView(request, candidate_id=None, event_id=None):
 
 # View to get mapbox token from .env file
 def get_mapbox_token(request):
-    mapbox_token = getattr(settings, 'MAPBOX_ACCESS_TOKEN', None)
+    mapbox_token = os.getenv('MAPBOX_ACCESS_TOKEN')
     if mapbox_token is None:
         return JsonResponse({'error': 'Mapbox access token not configured.'}, status=400)
     

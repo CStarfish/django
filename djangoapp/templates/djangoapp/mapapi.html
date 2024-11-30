@@ -14,21 +14,35 @@
     <!-- Include Mapbox GL JS -->
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
     <script>
-        // Your Mapbox access token
-        mapboxgl.accessToken = 'pk.eyJ1IjoiY3N0YXJmaXNoIiwiYSI6ImNtM2NobHBpbTF2cGkyaW9sbWgyYjhlYXYifQ.iI1fAgnb4qUJ7J2JmecpYA';
+        // Get mapbox access token
+        fetch('/get_mapbox_token/')
+            .then(response => {
+                console.log('Response:', response);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data received:', data);
+            
+                if (data.mapbox_token) {
+                    // Initialize the map
+                    var map = new mapboxgl.Map({
+                        container: 'map',
+                        style: 'mapbox://styles/mapbox/streets-v11',
+                        center: [{{ longitude }}, {{ latitude }}],
+                        zoom: 12,
+                        accessToken: data.mapbox_token
+                    });
 
-        // Initialize the map
-        var map = new mapboxgl.Map({
-            container: 'map', // ID of the map container
-            style: 'mapbox://styles/mapbox/streets-v11', // Map style
-            center: [{{ longitude }}, {{ latitude }}], // Default center [longitude, latitude]
-            zoom: 12 // Default zoom level
-        });
-
-        // create marker at the location
-        new mapboxgl.Marker()
-            .setLngLat([{{ longitude }}, {{ latitude }}]) // Marker coordinates
-            .addTo(map);
+                    // Create marker at the location
+                    new mapboxgl.Marker()
+                        .setLngLat([{{ longitude }}, {{ latitude }}])
+                        .addTo(map);
+                } 
+                else {
+                    console.error('Mapbox token not received');
+                }
+        })
+        .catch(error => console.error('Error fetching token:', error));
 
     </script>
 
