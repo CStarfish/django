@@ -373,7 +373,7 @@ def PolicyPageView(request, policy_id):
     policy = get_object_or_404(Policy, policy_id=policy_id)
     return render(request, 'djangoapp/policy_page.html', {'policy': policy})
 
-class EventPageView(LoginRequiredMixin, View):
+class EventPageView(View):
     template_name = 'djangoapp/event_page.html'
 
     def get(self, request, event_id):
