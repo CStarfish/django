@@ -377,9 +377,6 @@ class EventPageView(View):
     template_name = 'djangoapp/event_page.html'
 
     def get(self, request, event_id):
-        if not request.user.is_authenticated:
-            return redirect('djangoapp/login.html')
-        
         event = get_object_or_404(Event, event_id=event_id)
         form = EventUpdateForm(instance=event)
         is_creator = event.official.user == request.user

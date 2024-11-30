@@ -25,9 +25,8 @@ SECRET_KEY = 'django-insecure-2wqt=g^l2k268nnrgcoo!bg=i442s@*f%2xz84cbb@)4xb_mv%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['50.18.54.5']
-#'127.0.0.1'] #for testing locally
-
+ALLOWED_HOSTS = [#'50.18.54.5']
+'127.0.0.1'] #for testing locally
 
 # Application definition
 
@@ -81,12 +80,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'website',
-        'USER': 'jly',
-        #'USER': 'root',  # for local
-        'PASSWORD': 'CSC648@Server',
-        #'PASSWORD': '1234',  # for local
-        'HOST': '127.0.0.1',
-        #'HOST': 'localhost',  # for local
+        #'USER': 'jly',
+        'USER': 'root',  # for local
+        #'PASSWORD': 'CSC648@Server',
+        'PASSWORD': '1234',  # for local
+        #'HOST': '127.0.0.1',
+        'HOST': 'localhost',  # for local
         'PORT': '3306',  # Usually 3306
     }
 }
@@ -138,6 +137,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# login redirect
+LOGIN_URL = '/login/'
 
 # email configs - NOT USED
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
