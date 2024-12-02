@@ -521,8 +521,35 @@ class PollingCreationView(LoginRequiredMixin, FormView):
 
 def PollingLocationView(request, polling_location_id):
     polling_location = get_object_or_404(PollingLocation, polling_location_id=polling_location_id)
-    return render(request, 'djangoapp/polling_location.html', {'polling_location': polling_location})
+    is_admin = request.user.is_staff
+    return render(request, 'djangoapp/polling_location.html', {
+        'polling_location': polling_location,
+        'is_admin': is_admin
+        })
 
+class PollingLocationEditView(LoginRequiredMixin, View):
+    template_name = 'djangopapp/polling_edit.html'
+
+    def get(self, request, polling_location_id):
+        polling_location = get_object_or_404(PollingLocation, polling_location_id=polling_location_id)
+        form = PollingLocationForm(instance=polling_location)
+        return render(request, self.template_name, {
+            'form': form,
+            'polling_location': polling_location
+            })
+    def post(self, request, polling_location_id):
+        polling_location = get_object_or_404(PollingLocation, polling_location_id=polling_location_id)
+        form = PollingLocationForm(request.POST, request.FILES, instance=polling_location)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Polling location updated successfully.")
+            return redirect('polling_location', polling_location_id=polling_location_id)
+        else:
+            messages.error(request, "There was an error updating the polling location.")
+            return render(request, self.template_name, {
+                'form': form,
+                'polling_location': polling_location
+            })
 
 # View to follow a candidate or event
 def FollowView(request, candidate_id=None, event_id=None):

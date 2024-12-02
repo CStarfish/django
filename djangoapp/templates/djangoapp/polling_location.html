@@ -13,5 +13,8 @@
     <p><strong>{{ polling_location.location }}</strong></p>
     {% include 'djangoapp/mapapi.html' with longitude=polling_location.longitude latitude=polling_location.latitude %}
     <img src="{{ polling_location.location_picture.url }}" class="card-img-top" alt="Location Image"/>
+    {% if is_admin %}
+        <a href="{% url 'polling_edit' polling_location.id %}" class="btn btn-primary">Edit</a>
+    {% endif %}
 </div>
 {% endblock %}
