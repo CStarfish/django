@@ -1,5 +1,5 @@
 /* General form container for alignment and padding */
-.password-change-container {
+.container {
     max-width: 400px;
     margin: 0 auto;
     padding: 30px;
@@ -8,17 +8,19 @@
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Centered heading for the form */
-.text-center {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 1.5em;
+/* Style for each form field label */
+.container ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 15px 0;
+    font-family: Arial, sans-serif;
     color: #333;
-    margin-bottom: 20px;
+    font-size: 1em;
 }
 
+
 /* Error message styling */
-.alert {
+.errorlist {
     color: red;
     font-size: 0.85em;
     margin-top: 5px;
@@ -27,7 +29,10 @@
 }
 
 /* Input fields and select dropdown styling */
-.password-change-container input[type="password"] {
+.container input[type="text"],
+.container input[type="email"],
+.container input[type="password"],
+.container select {
     width: 100%;
     padding: 5px;
     margin-top: 5px;
@@ -38,8 +43,16 @@
 }
 
 /* Extra margin between input groups for improved readability */
-.password-change-container .form-group {
-    margin-bottom: 15px;
+.container ul+ul {
+    margin-top: 15px;
+}
+
+/* Styling for dynamically toggled student and official fields */
+#student_field,
+#official_field {
+    margin-top: 15px;
+    display: none;
+    /* Default hidden; toggled by JavaScript */
 }
 
 /* Submit button styling */
@@ -60,7 +73,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: #007bff;
 }
 
 /* Styling for the 'Back to login' link */
@@ -77,4 +90,13 @@ button[type="submit"]:hover {
 
 .login-redirect a:hover {
     text-decoration: underline;
+}
+
+/* Centered heading for the form */
+h2 {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 20px;
 }

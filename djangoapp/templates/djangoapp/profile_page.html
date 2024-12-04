@@ -1,117 +1,139 @@
-{% extends "djangoapp/base.html"%}
-{% block title %}{{ user.first_name}}'s Profile {% endblock%}
+{% extends "djangoapp/base.html" %}
+{% block title %}{{ user.first_name }}'s Profile {% endblock %}
+{% load static %}
 {% block content %}
-<div class="container">
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile_page.css' %}" />
+
+<div class="profile-container">
     <!-- Display general user information -->
-    <h1>{{ user.first_name }} {{ user.last_name }}'s Profile</h1>
-    <p>Username: {{ user.username }}</p>
-    {% if user.is_student %}
-        <p>Student User</p>
-    {% elif user.is_candidate %}
-        <p>Candidate</p>
-    {% elif user.is_official %}
-        <p>Official User</p>
-    {% else %}
-        <p>General User</p>
-    {% endif %}
-    <p>Political Party: {{ user.political_party }}</p>
-    <div class="centered-div">
-        <img class="card-img-top" src="{{ user.profile.profile_picture.url }} " style="cursor: pointer;"/>
+    <div class="profile-header">
+        <h1>{{ user.first_name }} {{ user.last_name }}'s Profile</h1>
+        <p>Username: {{ user.username }}</p>
+        {% if user.is_student %}
+            <p>Student User</p>
+        {% elif user.is_candidate %}
+            <p>Candidate</p>
+        {% elif user.is_official %}
+            <p>Official User</p>
+        {% else %}
+            <p>General User</p>
+        {% endif %}
+        <p>Political Party: {{ user.political_party }}</p>
+    </div>
+    <div class="profile-picture">
+        <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" />
         <p>{{ user.profile.bio }}</p>
     </div>
     
     <!-- Display candidate campaign if candidate -->
     {% if user.is_candidate %}
-        <p><strong>Campaign Name and Details:</strong></p>
-        <p>{{ candidate.campaign_name}}: {{ candidate.campaign_details}}</p>
+        <div class="campaign-details">
+            <h2>Campaign Name and Details:</h2>
+            <p>{{ candidate.campaign_name }}: {{ candidate.campaign_details }}</p>
+        </div>
     {% endif %}
 
     <!-- Display official's policies and events if official -->
     {% if user.is_official %}
-        <h2> Policies </h2>
-        <ul>
-            {% for policy in policies %}
-                <li><a href="{% url 'policy_page' policy.policy_id %}"> {{ policy.name }} </a></li>
-                <ul>Description: {{ policy.desc }}</ul>
-            {% empty %}
-                <p>No Policies Found</p>
-            {% endfor %}
-        </ul>
+        <div class="policies-section">
+            <h2>Policies</h2>
+            <ul class="policies-list">
+                {% for policy in policies %}
+                    <li class="policy-card">
+                        <a href="{% url 'policy_page' policy.policy_id %}">{{ policy.name }}</a>
+                        <p>Description: {{ policy.desc }}</p>
+                    </li>
+                {% empty %}
+                    <p>No Policies Found</p>
+                {% endfor %}
+            </ul>
+        </div>
 
-        <h2> Events </h2>
-        <ul>
-        {% for event in events %}
-            <li><a href="{% url 'event_page' event.event_id %}"> {{ event.name }} </a></li>
-            <ul> {{ event.location }} </ul>
-            <ul>Starts on: {{ event.start }}</ul>
-            <ul>Ends on: {{ event.end }} </ul>
-            <ul>Description: {{ event.desc }} </ul>
-        {% empty %}
-            <p>No events found</p>
-        {% endfor %}
-        </ul>
+        <div class="events-section">
+            <h2>Events</h2>
+            <ul class="events-list">
+                {% for event in events %}
+                    <li class="event-card">
+                        <a href="{% url 'event_page' event.event_id %}">{{ event.name }}</a>
+                        <p>Location: {{ event.location }}</p>
+                        <p>Starts on: {{ event.start }}</p>
+                        <p>Ends on: {{ event.end }}</p>
+                        <p>Description: {{ event.desc }}</p>
+                    </li>
+                {% empty %}
+                    <p>No events found</p>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
 
-    <!-- Only checks if profile page belongs to candidate, if someone can find out if it can also check that 
-    the current user is not the same as profile user, plase adjust accordingly -->
+    <!-- Rating form for candidates -->
     {% if user.is_candidate %}
         <div class="rating-form">
             <h2>Leave a Rating</h2>
             <form method="POST" action="{% url 'profile_page' user.id %}">
                 {% csrf_token %}
                 <div class="star-rating">
-                {% for value, label in rating_form.fields.rating.choices %}
-                    <input type="radio" id="star{{ value }}" name="rating" value="{{ value }}" class="star-input" />
-                    <label for="star{{ value }}" class="star">{{ label }}</label>
-                {% endfor %}
+                    {% for value, label in rating_form.fields.rating.choices %}
+                        <input type="radio" id="star{{ value }}" name="rating" value="{{ value }}" class="star-input" />
+                        <label for="star{{ value }}" class="star">{{ label }}</label>
+                    {% endfor %}
                 </div>
-                {{ rating_form.desc}}
+                {{ rating_form.desc }}
                 <button type="submit" class="btn btn-primary">Submit Review</button>
             </form>
         </div>
 
-        <ul>
-            <h2> Ratings </h2>
-            {% for rating in ratings %}
-                <li>{{ rating.user.username }}: {{ rating.rating }} stars</li>
-                <ul>{{ rating.desc }}</ul>
-            {% empty %}
-                <p>No ratings Found</p>
-            {% endfor %}
-        </ul>
+        <div class="ratings-section">
+            <h2>Ratings</h2>
+            <ul class="ratings-list">
+                {% for rating in ratings %}
+                    <li class="rating-card">
+                        <p>{{ rating.user.username }}: {{ rating.rating }} stars</p>
+                        <p>{{ rating.desc }}</p>
+                    </li>
+                {% empty %}
+                    <p>No ratings found</p>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
 
-    <h2>Followed Candidates</h2>
-    <ul>
-        {% for follow in user.follows.all %}
-            {% if follow.candidate %}
-                <li>
-                    <a href="{% url 'profile_page' follow.candidate.user.user.id %}">
-                        {{ follow.candidate.user.user.fist_name}} {{ follow.candidate.user.user.last_name }}
-                    </a>
-                </li>
-            {% endif %}
-        {% empty %}
-            <p>No followed candidates</p>
-        {% endfor %}
-     </ul>
-
-     <h2>Followed Events</h2>
-     <ul>
-        {% for follow in user.follows.all %}
-            {% if follow.event %}
-                <li>
-                    <a href="{% url 'event_page' follow.event.event_id %}"">{{folow.event.name}}</a>
-                </li>
-                <ul>Location: {{ follow.event.location }}</ul>
-                <ul>Starts on: {{ follow.event.start }}</ul>
-                <ul>End on: {{ follow.event.end }}</ul>
-                <ul>Description: {{ follow.event.desc }}</ul>
-            {% endif %}
+    <div class="followed-candidates">
+        <h2>Followed Candidates</h2>
+        <ul class="followed-list">
+            {% for follow in user.follows.all %}
+                {% if follow.candidate %}
+                    <li>
+                        <a href="{% url 'profile_page' follow.candidate.user.user.id %}">
+                            {{ follow.candidate.user.user.first_name }} {{ follow.candidate.user.user.last_name }}
+                        </a>
+                    </li>
+                {% endif %}
             {% empty %}
-                <p>No followed events.</p>
-        {% endfor %}
-     </ul>
+                <p>No followed candidates</p>
+            {% endfor %}
+        </ul>
+    </div>
 
+    <div class="followed-events">
+        <h2>Followed Events</h2>
+        <ul class="followed-list">
+            {% for follow in user.follows.all %}
+                {% if follow.event %}
+                    <li>
+                        <a href="{% url 'event_page' follow.event.event_id %}">{{ follow.event.name }}</a>
+                        <p>Location: {{ follow.event.location }}</p>
+                        <p>Starts on: {{ follow.event.start }}</p>
+                        <p>Ends on: {{ follow.event.end }}</p>
+                        <p>Description: {{ follow.event.desc }}</p>
+                    </li>
+                {% endif %}
+            {% empty %}
+                <p>No followed events</p>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
+
 {% endblock %}

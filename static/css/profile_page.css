@@ -1,0 +1,187 @@
+.profile-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.profile-header h1 {
+    font-size: 32px;
+    font-weight: 500;
+}
+
+.profile-header p {
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+.profile-picture {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-picture img {
+    max-width: 150px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.profile-picture p {
+    font-size: 16px;
+    color: #7f8c8d;
+}
+
+.campaign-details,
+.policies-section,
+.events-section,
+.rating-form,
+.ratings-section,
+.followed-candidates,
+.followed-events {
+    margin-bottom: 30px;
+}
+
+.campaign-details h2,
+.policies-section h2,
+.events-section h2,
+.rating-form h2,
+.ratings-section h2,
+.followed-candidates h2,
+.followed-events h2 {
+    font-size: 24px;
+    color: #34495e;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+.policies-list,
+.events-list,
+.ratings-list,
+.followed-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.policy-card,
+.event-card,
+.rating-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.policy-card:hover,
+.event-card:hover,
+.rating-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.policy-card a,
+.event-card a {
+    color: #2980b9;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.policy-card a:hover,
+.event-card a:hover {
+    color: #3498db;
+}
+
+.policy-card p,
+.event-card p,
+.rating-card p {
+    color: #7f8c8d;
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.star-rating {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.star-input {
+    display: none;
+}
+
+.star {
+    font-size: 24px;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star-input:checked~.star {
+    color: #f39c12;
+}
+
+.star:hover,
+.star:hover~.star {
+    color: #f39c12;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #2980b9;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn:hover {
+    background-color: #3498db;
+}
+
+@media (max-width: 600px) {
+    .profile-container {
+        margin: 20px auto;
+        padding: 15px;
+    }
+
+    .profile-header h1 {
+        font-size: 24px;
+    }
+
+    .profile-header p {
+        font-size: 16px;
+    }
+
+    .campaign-details h2,
+    .policies-section h2,
+    .events-section h2,
+    .rating-form h2,
+    .ratings-section h2,
+    .followed-candidates h2,
+    .followed-events h2 {
+        font-size: 20px;
+    }
+
+    .policy-card,
+    .event-card,
+    .rating-card {
+        padding: 15px;
+    }
+}

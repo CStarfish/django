@@ -1,0 +1,177 @@
+/* Profile page container */
+.jumbotron {
+    background-color: #fff;
+    padding: 2rem;
+    text-align: center;
+    margin: 2rem auto;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    max-width: 700px;
+    margin-bottom: 3rem;
+}
+
+/* Profile headings */
+.jumbotron h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+/* User type badge */
+.jumbotron p {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Avatar image styling */
+.card-img-top,
+.centered-div img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    display: block;
+}
+
+/* Political party info */
+.jumbotron p:nth-of-type(2) {
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+
+/* Centered content */
+.centered-div {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Ensures vertical alignment */
+    justify-content: center;
+    /* Ensures horizontal alignment */
+}
+
+.centered-div img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+}
+
+.centered-div p {
+    font-size: 1rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Form styling */
+form {
+    max-width: 600px;
+    margin: 2rem auto;
+    text-align: left;
+}
+
+form p,
+form label {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+form input[type="text"],
+form input[type="email"],
+form select,
+form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Submit button */
+form button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Links inside form */
+form a {
+    display: inline-block;
+    margin-right: 1rem;
+    color: #007bff;
+    text-decoration: none;
+}
+
+form a:hover {
+    text-decoration: underline;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+/* Small text labels */
+.small {
+    font-size: 0.875rem;
+    color: #555;
+}
+
+/* Horizontal rule styling */
+hr {
+    border: none;
+    border-top: 1px solid #dee2e6;
+    margin: 1.5rem 0;
+}
+
+/* Additional buttons (e.g., Apply for Candidacy) */
+form a.button-link {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    background-color: #6c757d;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+form a.button-link:hover {
+    background-color: #5a6268;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .jumbotron {
+        padding: 1.5rem;
+    }
+
+    .jumbotron h1 {
+        font-size: 1.75rem;
+    }
+
+    form {
+        margin: 1.5rem auto;
+    }
+
+    form button[type="submit"],
+    form a.button-link {
+        width: 100%;
+        text-align: center;
+    }
+}

@@ -1,88 +1,103 @@
 {% extends "djangoapp/base.html" %}
-{% block title %} Results Page {% endblock title%}
+{% block title %} Results Page {% endblock title %}
 {% load static %}
 {% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/results.css' %}" />
 
+<div class="results-container">
     {% if not query == '' %}
         <h1>Results for {{ query }}</h1>
     {% endif %}
     {% if query == '' %}
         <h1>Results</h1>
     {% endif %}
-    <ul>
+    <ul class="results-list">
         <!-- Display Users -->
         {% if users.exists %}
-            <strong>Users:</strong>
-            <ul>
+            <strong class="results-category">Users:</strong>
+            <ul class="results-sublist">
                 {% for user in users.all %}
-                    <li><a href="{% url 'profile_page' user_id=user.id %}">{{ user.first_name }} {{ user.last_name }}</a></li>
-                    {% if user.is_candidate %}
-                        <ul>Candidate</ul>
-                    {% elif user.is_official %}
-                        <ul>Official</ul>
-                    {% elif user.is_student %}
-                        <ul>Student</ul>
-                    {% else %}
-                        <ul>User</ul>
-                    {% endif %}
-                    <ul>Username: {{ user.username }}</ul>
+                    <li class="result-card">
+                        <a href="{% url 'profile_page' user_id=user.id %}">{{ user.first_name }} {{ user.last_name }}</a>
+                        <ul class="result-details">
+                            {% if user.is_candidate %}
+                                <li>Candidate</li>
+                            {% elif user.is_official %}
+                                <li>Official</li>
+                            {% elif user.is_student %}
+                                <li>Student</li>
+                            {% else %}
+                                <li>User</li>
+                            {% endif %}
+                            <li>Username: {{ user.username }}</li>
+                        </ul>
+                    </li>
                 {% empty %}
-                    <li>No users match.</li>
+                    <li class="no-results">No users match.</li>
                 {% endfor %}
             </ul>
         {% endif %}
 
         <!-- Display Policies -->
         {% if policies.exists %}
-            <strong>Policies:</strong>
-            <ul>
+            <strong class="results-category">Policies:</strong>
+            <ul class="results-sublist">
                 {% for policy in policies.all %}
-                    <li><a href="{% url 'policy_page' policy.policy_id %}">{{ policy.name }}: {{ policy.desc }}</a></li>
+                    <li class="result-card">
+                        <a href="{% url 'policy_page' policy.policy_id %}">{{ policy.name }}: {{ policy.desc }}</a>
+                    </li>
                 {% empty %}
-                    <li>No policies match.</li>
+                    <li class="no-results">No policies match.</li>
                 {% endfor %}
             </ul>
         {% endif %}
 
+        <!-- Display Events -->
         {% if events.exists %}
-            <!-- Display Events -->
-            <strong>Events:</strong>
-            <ul>
+            <strong class="results-category">Events:</strong>
+            <ul class="results-sublist">
                 {% for event in events.all %}
-                    <li><a href="{% url 'event_page' event.event_id %}">{{ event.name }} - {{ event.location }} - Host: {{ event.official.user.first_name }} {{ event.official.user.last_name }}</a></li>
+                    <li class="result-card">
+                        <a href="{% url 'event_page' event.event_id %}">{{ event.name }} - {{ event.location }} - Host: {{ event.official.user.first_name }} {{ event.official.user.last_name }}</a>
+                    </li>
                 {% empty %}
-                    <li>No events match.</li>
+                    <li class="no-results">No events match.</li>
                 {% endfor %}
             </ul>
         {% endif %}
 
+        <!-- Display Election Offices -->
         {% if election_offices.exists %}
-            <!-- Display Election Offices -->
-            <strong>Election Offices:</strong>
-            <ul>
+            <strong class="results-category">Election Offices:</strong>
+            <ul class="results-sublist">
                 {% for election_office in election_offices.all %}
-                    <li><a href="{% url 'election_office' election_office.user_id %}">{{ election_office.location }}</a></li>
+                    <li class="result-card">
+                        <a href="{% url 'election_office' election_office.user_id %}">{{ election_office.location }}</a>
+                    </li>
                 {% empty %}
-                    <li>No election offices match.</li>
+                    <li class="no-results">No election offices match.</li>
                 {% endfor %}
             </ul>
         {% endif %}
 
+        <!-- Display Polling Locations -->
         {% if polling_locations.exists %}
-            <!-- Display Events -->
-            <strong>Events:</strong>
-            <ul>
+            <strong class="results-category">Polling Locations:</strong>
+            <ul class="results-sublist">
                 {% for polling_location in polling_locations.all %}
-                    <li><a href="{% url 'polling_location' polling_location.polling_location_id %}">{{ polling_location.name }} - {{ polling_location.location }}</a></li>
+                    <li class="result-card">
+                        <a href="{% url 'polling_location' polling_location.polling_location_id %}">{{ polling_location.name }} - {{ polling_location.location }}</a>
+                    </li>
                 {% empty %}
-                    <li>No polling locations match.</li>
+                    <li class="no-results">No polling locations match.</li>
                 {% endfor %}
             </ul>
         {% endif %}
 
-        {% if not users.exists and not policies.exists and not events.exists and not election_offices.exists and not polling_locations.exists%}
-            <li>No results found...</li>
+        {% if not users.exists and not policies.exists and not events.exists and not election_offices.exists and not polling_locations.exists %}
+            <li class="no-results">No results found...</li>
         {% endif %}
     </ul>
+</div>
 
 {% endblock %}

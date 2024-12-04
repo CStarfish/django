@@ -10,6 +10,12 @@ body {
     flex-direction: column;
 }
 
+/* Ensure no extra margin or padding if the message container is hidden */
+.message-container {
+    margin-top: 0;
+    padding-top: 0;
+}
+
 header {
     background-color: #333;
     color: #fff;
@@ -252,15 +258,15 @@ footer ul li a:hover {
 
 /* Highlight selected star and all previous stars on click */
 .star-rating label:hover,
-.star-rating label:hover ~ label {
+.star-rating label:hover~label {
     color: #ffc107;
 }
 
-.star-rating input[type="radio"]:checked ~ label {
+.star-rating input[type="radio"]:checked~label {
     color: #ffc107;
 }
 
 /* Make sure all stars up to the clicked one stay highlighted */
-.star-rating input[type="radio"]:checked + label {
-    color: #ffc107; 
+.star-rating input[type="radio"]:checked+label {
+    color: #ffc107;
 }

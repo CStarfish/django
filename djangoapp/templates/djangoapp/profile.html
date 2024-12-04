@@ -1,6 +1,8 @@
 {% extends "djangoapp/base.html" %}
 {% block title %} Profile Page {% endblock title%}
+{% load static %}
 {% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}" />
 <div class="jumbotron">
     <h1>Page Preview</h1>
     <h1>{{ user.first_name }} {{ user.last_name }}'s Profile</h1>
