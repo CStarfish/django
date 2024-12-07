@@ -2,37 +2,37 @@
 {% block title %} Home Page {% endblock title%}
 {% load static %}
 {% block content %}
-<div class = 'container'>
-    <form method="POST" action="{% url 'policy_creation' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/form_creation.css' %}" />
+<div class="main-container">
+    <form method="POST" action="{% url 'policy_creation' %}" class="creation-form">
         {% csrf_token %}
-        <!-- Include error messages -->
         {% if form.errors %}
-            <div class="alert alert-danger">
-                <ul>
+            <div class="error-container">
+                <ul class="error-list">
                     {% for field, errors in form.items %}
                         {% for error in errors %}
-                            <li>{{ error }}</li>
+                            <li class="error-item">{{ error }}</li>
                         {% endfor %}
                     {% endfor %}
                 </ul>
             </div>
         {% endif %}
 
-        <!-- Campaign Details -->
-        <fieldset>
-            <legend>Create Policy</legend>
-            <div>
-                <label for="policy_name">Policy Name:</label>
-                <p>{{ form.name }}</p>
+        <div class="content-container">
+            <h2 class="form-title">Create Policy</h2>
+            <div class="form-group">
+                <label for="policy_name" class="form-label">Policy Name:</label>
+                {{ form.name }}
             </div>
-            <div>
-                <label for="policy_description">Campaign Description:</label>
-                <p>{{ form.desc }}</p>
+            <div class="form-group">
+                <label for="policy_description" class="form-label">Policy Description:</label>
+                {{ form.desc }}
             </div>
-        </fieldset>
-        <div>
-            <button type="submit">Create</button>
         </div>
-</form>
+
+        <div class="button-container">
+            <button type="submit" class="submit-button">Save Changes</button>
+        </div>
+    </form>
 </div>
 {% endblock %}

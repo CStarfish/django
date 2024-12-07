@@ -2,37 +2,37 @@
 {% block title %} Home Page {% endblock title%}
 {% load static %}
 {% block content %}
-<div class = 'container'>
-    <form method="POST" action="{% url 'candidacy' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/form_creation.css' %}" />
+<div class="main-container">
+    <form method="POST" action="{% url 'candidacy' %}" class="creation-form">
         {% csrf_token %}
-        <!-- Include error messages -->
         {% if form.errors %}
-            <div class="alert alert-danger">
-                <ul>
+            <div class="error-container">
+                <ul class="error-list">
                     {% for field, errors in form.items %}
                         {% for error in errors %}
-                            <li>{{ error }}</li>
+                            <li class="error-item">{{ error }}</li>
                         {% endfor %}
                     {% endfor %}
                 </ul>
             </div>
         {% endif %}
 
-        <!-- Campaign Details -->
-        <fieldset>
-            <legend>Campaign Details</legend>
-            <div>
-                <label for="campaign_title">Campaign Title:</label>
-                <p>{{ form.campaign_name }}</p>
+        <div class="content-container">
+            <h2 class="form-title">Campaign Details</h2>
+            <div class="form-group">
+                <label for="campaign_title" class="form-label">Campaign Title:</label>
+                {{ form.campaign_name }}
             </div>
-            <div>
-                <label for="campaign_description">Campaign Description:</label>
-                <p>{{ form.campaign_details }}</p>
+            <div class="form-group">
+                <label for="campaign_description" class="form-label">Campaign Description:</label>
+                {{ form.campaign_details }}
             </div>
-        </fieldset>
-        <div>
-            <button type="submit">Submit Application</button>
         </div>
-</form>
+
+        <div class="button-container">
+            <button type="submit" class="submit-button">Save Changes</button>
+        </div>
+    </form>
 </div>
 {% endblock %}
