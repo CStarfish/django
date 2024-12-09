@@ -212,6 +212,7 @@ class SearchView(FormView):
         filter1 = self.request.GET.get('filter1')
 
         print(f"Query: {query}")
+        print(f"filter: {filter1}")
 
         users = None
         policies = None
@@ -265,7 +266,8 @@ class SearchView(FormView):
             "events": events,
             "election_offices": election_offices,
             "polling_locations": polling_locations,
-            "query": query
+            "query": query,
+            "filer1": filter1
         })
 
 
@@ -579,7 +581,7 @@ def UnfollowView(request, candidate_id=None, event_id=None):
 
 
 # View to get mapbox token from .env file
-def get_mapbox_token(request):
+def GetMapboxToken(request):
     mapbox_token = os.getenv('MAPBOX_ACCESS_TOKEN')
     if mapbox_token is None:
         return JsonResponse({'error': 'Mapbox access token not configured.'}, status=400)
@@ -587,7 +589,7 @@ def get_mapbox_token(request):
     return JsonResponse({'mapbox_token': mapbox_token})
 
 @login_required
-def messages_home(request):
+def MessagesView(request):
     if request.method == 'POST':
         form = MessageForm(request.POST)
         if form.is_valid():

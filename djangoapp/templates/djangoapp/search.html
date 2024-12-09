@@ -24,12 +24,12 @@
         <section class="search">
             <!-- Search button logic -->
             <form method="GET" action="{% url 'results' %}">
-                    {{ form.search }}
-                    <button type="submit" value="OK">Search</button>
-                    <div class="filters">
-                        <h3>Filter By:</h3>
-                        {{ form.filter1 }}
-                    </div>
+                {{ form.search }}
+                <div class="filters">
+                    <h3>Filter By:</h3>
+                    {{ form.filter1 }}
+                </div>
+                <button type="submit" value="OK">Search</button>
             </form>
         </section>
     </main>
