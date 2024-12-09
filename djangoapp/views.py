@@ -25,10 +25,10 @@ from django.views import View
 from django.views.generic import (TemplateView, FormView)
 
 from .models import *
-from .models import (User, Profile, Policy, Event, PoliticalParty, Candidate, Candidate, Follow, UserUpdate)
+from .models import (User, Profile, Policy, Event, PoliticalParty, Candidate, Candidate, Follow, UserUpdate, Messages)
 
 from .forms import *
-from .forms import (RegistrationForm, LoginForm, UpdateUserForm, UpdateProfileForm, SearchForm, RatingForm, EventUpdateForm)
+from .forms import (RegistrationForm, LoginForm, UpdateUserForm, UpdateProfileForm, SearchForm, RatingForm, EventUpdateForm, MessageForm)
 
 # Create your views here.
 # Displays home page
@@ -585,3 +585,18 @@ def get_mapbox_token(request):
         return JsonResponse({'error': 'Mapbox access token not configured.'}, status=400)
     
     return JsonResponse({'mapbox_token': mapbox_token})
+
+@login_required
+def messages_home(request):
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.user1 = request.user
+            message.save()
+            return redirect('messages_home')
+        else:
+            form = MessageForm()
+        
+        messages = Messages.objects.filter(user2=request.user)
+        return render(request, 'messages_home.html', {'messages': messages, 'form': form})

@@ -265,3 +265,8 @@ class PollingLocationForm(forms.ModelForm):
                     raise ValidationError("Could not find this location. Please enter a valid location.")
         
             return location
+        
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Messages
+        fields = ['user2', 'message']

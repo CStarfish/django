@@ -71,4 +71,5 @@ urlpatterns = [
     path('polling_location/<int:polling_location_id>/edit', views.PollingLocationEditView.as_view(), name='polling_edit'),
     path('polling_location/<int:polling_location_id>', views.PollingLocationView, name='polling_location'),
     path('get_mapbox_token/', views.get_mapbox_token, name='get_mapbox_token'),
+    path('messages/', views.MessagesView.as_view(), name='messages_home'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

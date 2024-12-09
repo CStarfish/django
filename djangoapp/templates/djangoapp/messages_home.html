@@ -1,0 +1,22 @@
+{ % extends "djangoapp/base.html" % }
+{ % block title % } Messages { % endblock % }
+{ % block content % }
+
+<div class="container">
+    <h2>Inbox</h2>
+    <ul>
+        {% for message in messages %}
+        <li>
+            {{message.date_created}}
+            - From: {{message.user1}} 
+            - {{message.message}}
+        </li>
+        {% endfor %}
+    </ul>
+    <h2>Send a Message</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Send</button>
+    </form>
+</div>
