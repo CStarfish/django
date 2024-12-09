@@ -97,7 +97,7 @@ class LoginForm(AuthenticationForm):
 
     password = forms.CharField(
         required = True,
-        widget = forms.TextInput(attrs = {"id": 'password'})
+        widget = forms.PasswordInput(attrs = {"id": 'password'})
     )
 
 
