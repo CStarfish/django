@@ -253,7 +253,7 @@ class Event(models.Model):
                 # Pass location field in polling location model to the Mapbox API
                 response = requests.get(
                     'https://api.mapbox.com/geocoding/v5/mapbox.places/{0}.json'.format(self.location),
-                    params={'access_token': 'pk.eyJ1IjoiY3N0YXJmaXNoIiwiYSI6ImNtM2NobHBpbTF2cGkyaW9sbWgyYjhlYXYifQ.iI1fAgnb4qUJ7J2JmecpYA'}
+                    params={'access_token': 'pk.eyJ1IjoiY3N0YXJmaXNoIiwiYSI6ImNtNDNndGhoZzBidnEyaXE1NXVjaW0zMzcifQ.C86l5PThLpBfatE4yeoIxw'}
                 )
                 if response.status_code == 200:
                     data = response.json()

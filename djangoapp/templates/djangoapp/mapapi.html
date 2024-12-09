@@ -21,6 +21,7 @@
                 return response.json();
             })
             .then(data => {
+                console.log('data:', data);
                 if (data.mapbox_token) {
                     // Initialize the map
                     var map = new mapboxgl.Map({
