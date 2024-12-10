@@ -11,6 +11,7 @@
     </p>
     <p><strong>{{ polling_location.name }}</strong></p>
     <p><strong>{{ polling_location.location }}</strong></p>
+    <p><strong>Contact info: {{ polling_location.contact_info }}</strong></p>
     {% include 'djangoapp/mapapi.html' with longitude=polling_location.longitude latitude=polling_location.latitude %}
     <img src="{{ polling_location.location_picture.url }}" class="card-img-top" alt="Location Image"/>
     {% if is_creator %}

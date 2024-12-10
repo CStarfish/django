@@ -559,7 +559,7 @@ class PollingCreationView(LoginRequiredMixin, FormView):
     
 
 class PollingLocationView(View):
-    form_class = PollingLocationForm
+    form_class = PollingLocationUpdateForm
     template_name = 'djangoapp/polling_location.html'
 
     def get(self, request, polling_location_id):
@@ -579,15 +579,11 @@ class PollingLocationView(View):
             messages.error(request, "You do not have permission to edit this Polling Location.")
             return redirect('polling_location', polling_location_id=polling_location_id)
         
-        form = PollingLocationUpdateForm(request.POST, instance=polling_location)
+        form = PollingLocationUpdateForm(request.POST, request.FILES, instance=polling_location)
         if form.is_valid():
             form.save()
             messages.success(request, "Polling location updated successfully.")
-            return render(request, self.template_name, {
-                'polling_location': polling_location,
-                'form': form,
-                'is_creator': is_creator
-            })
+            return redirect('polling_location', polling_location_id=polling_location_id)
         else:
             messages.error(request, "There was an error updating the polling location.")
             return render(request, self.template_name, {
@@ -608,7 +604,7 @@ def FollowView(request, candidate_id=None, event_id=None):
         Follow.objects.get_or_create(user=request.user, event=event)
         messages.success(request, f"You are now following {event}.")
         
-    return redirect('profile', user_id=request.user);
+    return redirect('profile', user_id=request.user)
 
 
 # View to unfollow

@@ -329,7 +329,7 @@ class PollingLocation(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     contact_info = models.CharField(max_length=255, null=True, blank=True)
-    location_picture = models.ImageField(default='default.jpg', upload_to='profile_images')
+    location_picture = models.ImageField(default='default.jpg', upload_to='polling_location_images')
 
     class Meta:
         db_table = 'Polling Location'
@@ -339,18 +339,8 @@ class PollingLocation(models.Model):
     
     # resizing images taken from profile
     def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
         img = Image.open(self.location_picture.path)
-
-        if img.height > 150 or img.width > 150:
-            new_img = (150, 150)
-            img.thumbnail(new_img)
-            img.save(self.location_picture.path, format='JPEG')  # Specify the format if needed
-        elif img.height < 150 or img.width < 150:
-            img = Image.open(self.location_picture.path)
-            img.thumbnail((150, 150), Image.LANCZOS)
-            new_img = Image.new('RGB', (150, 150), (255, 255, 255))  # White background
-            new_img.paste(img, ((150 - img.width) // 2, (150 - img.height) // 2))  # Center the image
-            new_img.save(self.location_picture.path, format='JPEG')  # Specify the format if needed
 
         if self.location:
             try:

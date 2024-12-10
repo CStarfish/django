@@ -128,8 +128,10 @@ class UpdateUserForm(forms.ModelForm):
 
 
 class UpdateProfileForm(forms.ModelForm):
-    profile_picture = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
-    bio = forms.CharField(widget = forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+    profile_picture = forms.ImageField(required=False,
+        widget=forms.FileInput(attrs={'class': 'form-control-file'}))
+    bio = forms.CharField(required=False,
+        widget = forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
     class Meta:
         model = Profile
         fields = ['profile_picture', 'bio']
@@ -186,7 +188,6 @@ class PolicyUpdateForm(forms.ModelForm):
 
 class EventCreationForm(forms.ModelForm):
     name = forms.CharField()
-    # location = forms.CharField()
     state = forms.CharField()
     city = forms.CharField()
     street = forms.CharField()
@@ -339,7 +340,7 @@ class PollingLocationForm(forms.ModelForm):
         name = forms.CharField()
         location = forms.CharField()
         contact_info = forms.CharField()
-        location_picture = forms.ImageField(widget = forms.FileInput(attrs={'class': 'form-control-file'}))
+        location_picture = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
 
     def clean(self):
         cleaned_data = super().clean()
