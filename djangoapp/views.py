@@ -12,6 +12,9 @@ from django.contrib.auth.views import (PasswordResetView, PasswordChangeView)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from django.db.models import Q, Value
+from django.db.models.functions import Concat
+
 from django.utils import timezone
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
@@ -233,7 +236,12 @@ class SearchView(FormView):
                     events = Event.objects.all()
             case 'candidates':
                 if query:
-                    users = User.objects.filter(is_candidate=True, first_name__icontains=query)
+                    users = User.objects.annotate(
+                        full_name=Concat('first_name', Value(' '), 'last_name')
+                    ).filter(
+                        is_candidate=True,
+                        full_name__icontains=query
+                    )
                 else:
                     users = User.objects.filter(is_candidate=True)
             case 'election offices':
@@ -248,7 +256,11 @@ class SearchView(FormView):
                     polling_locations = PollingLocation.objects.all()
             case _: # Default to full output of every record if no filter is selected
                 if query:
-                    users = User.objects.filter(first_name__icontains=query)
+                    users = User.objects.annotate(
+                        full_name=Concat('first_name', Value(' '), 'last_name')
+                    ).filter(
+                        full_name__icontains=query
+                    )
                     policies = Policy.objects.filter(name__icontains=query)
                     events = Event.objects.filter(name__icontains=query)
                     election_offices = ElectionOffice.objects.filter(location__icontains=query)
