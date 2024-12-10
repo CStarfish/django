@@ -341,6 +341,44 @@ class PolicyCreationView(LoginRequiredMixin, FormView):
         return reverse_lazy('home')
     
 
+class PolicyPageView(View):
+    template_name = 'djangoapp/policy_page.html'
+
+    def get(self, request, policy_id):
+        policy = get_object_or_404(Policy, policy_id=policy_id)
+        form = PolicyUpdateForm(instance=policy)
+        is_creator = policy.official.user == request.user
+        return render(request, self.template_name, {
+            'policy': policy,
+            'form': form,   
+            'is_creator': is_creator    #flag to check if logged in user is the creator of the event
+        })
+    
+    def post(self, request, policy_id):
+        policy = get_object_or_404(Policy, policy_id=policy_id)
+        is_creator = policy.official.user == request.user
+        if not is_creator:
+            messages.error(request, "You do not have permission to edit this policy.")
+            return redirect('policy_page', policy_id=policy_id)
+        
+        form = PolicyUpdateForm(request.POST, instance=policy)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Policy updated successfully.")
+            return render(request, self.template_name, {
+                'policy': policy,
+                'form': form,
+                'is_creator': is_creator
+            })
+        else:
+            messages.error(request, "There was an error updating the policy.")
+            return render(request, self.template_name, {
+                'policy': policy,
+                'form': form,
+                'is_creator': is_creator
+            })
+    
+
 # Event creation
 # TODO: Allow updating of events via edit
 class EventCreationView(LoginRequiredMixin, FormView):
@@ -372,11 +410,6 @@ class EventCreationView(LoginRequiredMixin, FormView):
     
     def get_success_url(self):
         return reverse_lazy('event_page', args=[self.event_id])
-
-
-def PolicyPageView(request, policy_id):
-    policy = get_object_or_404(Policy, policy_id=policy_id)
-    return render(request, 'djangoapp/policy_page.html', {'policy': policy})
 
 
 class EventPageView(View):
@@ -541,7 +574,7 @@ class PollingLocationView(View):
 
     def post(self, request, polling_location_id):
         polling_location = get_object_or_404(PollingLocation, polling_location_id=polling_location_id)
-        is_creator = polling_location.office.user == request.user
+        is_creator = polling_location.office.user.user == request.user
         if not is_creator:
             messages.error(request, "You do not have permission to edit this Polling Location.")
             return redirect('polling_location', polling_location_id=polling_location_id)
@@ -550,38 +583,17 @@ class PollingLocationView(View):
         if form.is_valid():
             form.save()
             messages.success(request, "Polling location updated successfully.")
-            return redirect('polling_location', polling_location_id=polling_location_id)
+            return render(request, self.template_name, {
+                'polling_location': polling_location,
+                'form': form,
+                'is_creator': is_creator
+            })
         else:
             messages.error(request, "There was an error updating the polling location.")
             return render(request, self.template_name, {
                 'polling_location': polling_location,
                 'form': form,
                 'is_creator': is_creator
-            })
-
-
-class PollingLocationEditView(LoginRequiredMixin, View):
-    template_name = 'djangopapp/polling_edit.html'
-
-    def get(self, request, polling_location_id):
-        polling_location = get_object_or_404(PollingLocation, polling_location_id=polling_location_id)
-        form = PollingLocationForm(instance=polling_location)
-        return render(request, self.template_name, {
-            'form': form,
-            'polling_location': polling_location
-            })
-    def post(self, request, polling_location_id):
-        polling_location = get_object_or_404(PollingLocation, polling_location_id=polling_location_id)
-        form = PollingLocationForm(request.POST, request.FILES, instance=polling_location)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Polling location updated successfully.")
-            return redirect('polling_location', polling_location_id=polling_location_id)
-        else:
-            messages.error(request, "There was an error updating the polling location.")
-            return render(request, self.template_name, {
-                'form': form,
-                'polling_location': polling_location
             })
 
 

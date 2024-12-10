@@ -176,6 +176,14 @@ class PolicyCreationForm(forms.ModelForm):
         fields = ['name', 'desc']
 
 
+class PolicyUpdateForm(forms.ModelForm):
+    name = forms.CharField()
+    desc = forms.TextInput()
+    class Meta:
+        model = Policy
+        fields = ['name', 'desc']
+
+
 class EventCreationForm(forms.ModelForm):
     name = forms.CharField()
     # location = forms.CharField()
@@ -385,7 +393,7 @@ class PollingLocationForm(forms.ModelForm):
         return polling_location
 
 
-class PollingLocationUpdateForm(forms.ModelForm):
+class PollingLocationUpdateForm(PollingLocationForm):
     state = forms.CharField()
     city = forms.CharField()
     street = forms.CharField()

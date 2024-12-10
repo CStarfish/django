@@ -8,9 +8,28 @@
     <h1>{{ policy.name }}</h1>
     <p><strong>Policy of:</strong> 
         <a href="{% url 'profile_page' policy.official.user.id %}">
-        {{ policy.official.user.first_name }} {{ policy.official.user.last_name }}
+            {{ policy.official.user.first_name }} {{ policy.official.user.last_name }}
         </a>
     </p>
     <p>{{ policy.desc }}</p>
+    {% if is_creator %}
+        <h2>Update Policy</h2>
+        <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="content-container">
+            <div class="form-group">
+                <label for="policy_name" class="form-label">Policy Name:</label>
+                {{ form.name }}
+            </div>
+            <div class="form-group">
+                <label for="policy_description" class="form-label">Policy Description:</label>
+                {{ form.desc }}
+            </div>
+
+        <div class="button-container">
+            <button type="submit" class="submit-button">Save Changes</button>
+        </div>
+    </form>
+    {% endif %}
 </div>
 {% endblock %}

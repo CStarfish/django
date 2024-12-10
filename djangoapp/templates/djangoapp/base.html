@@ -57,7 +57,7 @@
     <div class="container message-container">
         <div class="messages">
             {% for message in messages %}
-                <div class="alert message alert-{{ message.tags }}">{{ message }}</div>
+            <div class="message">{{ message }}</div>
             {% endfor %}
         </div>
     </div>
@@ -68,7 +68,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // For displaying website responses
-            const messages = document.querySelectorAll('.message');
+            const messages = document.querySelectorAll('.message-container');
             
             messages.forEach(function(msg) {
                 msg.style.display = 'block';
