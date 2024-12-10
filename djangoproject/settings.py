@@ -23,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-2wqt=g^l2k268nnrgcoo!bg=i442s@*f%2xz84cbb@)4xb_mv%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1']  # for testing locally
-#'204.236.170.247']
+ALLOWED_HOSTS = [#'127.0.0.1']  # for testing locally
+'204.236.170.247']
 # Application definition
 
 INSTALLED_APPS = [
@@ -79,12 +79,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'website',
-        #'USER': 'jly',
-        'USER': 'root',  # for local
-        #'PASSWORD': 'CSC648@Server',
-        'PASSWORD': '1234',  # for local
-        #'HOST': '127.0.0.1',
-        'HOST': 'localhost',  # for local
+        'USER': 'jly',
+        #'USER': 'root',  # for local
+        'PASSWORD': 'CSC648@Server',
+        #'PASSWORD': '1234',  # for local
+        'HOST': '127.0.0.1',
+        #'HOST': 'localhost',  # for local
         'PORT': '3306',  # Usually 3306
     }
 }
