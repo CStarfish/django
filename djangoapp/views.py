@@ -12,7 +12,7 @@ from django.contrib.auth.views import (PasswordResetView, PasswordChangeView)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from django.db.models import Q, Value
+from django.db.models import Value
 from django.db.models.functions import Concat
 
 from django.utils import timezone
@@ -256,6 +256,7 @@ class SearchView(FormView):
                     polling_locations = PollingLocation.objects.all()
             case _: # Default to full output of every record if no filter is selected
                 if query:
+                    # concat both firstname and lastname for a full name search
                     users = User.objects.annotate(
                         full_name=Concat('first_name', Value(' '), 'last_name')
                     ).filter(
