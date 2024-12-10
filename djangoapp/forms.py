@@ -1,3 +1,4 @@
+from datetime import datetime
 from django import forms
 from django.contrib.auth import password_validation
 from django.contrib.auth.forms import (AuthenticationForm, UserCreationForm)
@@ -92,12 +93,12 @@ class RegistrationForm(UserCreationForm):
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
         required = True,
-        widget = forms.TextInput(attrs = {"id": 'username'})
+        widget = forms.TextInput(attrs={"id": 'username'})
     )
 
     password = forms.CharField(
         required = True,
-        widget = forms.PasswordInput(attrs = {"id": 'password'})
+        widget = forms.PasswordInput(attrs={"id": 'password'})
     )
 
 
@@ -127,8 +128,8 @@ class UpdateUserForm(forms.ModelForm):
 
 
 class UpdateProfileForm(forms.ModelForm):
-    profile_picture = forms.ImageField(widget = forms.FileInput(attrs={'class': 'form-control-file'}))
-    bio = forms.CharField(widget = forms.Textarea(attrs = {'class': 'form-control', 'rows': 5}))
+    profile_picture = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
+    bio = forms.CharField(widget = forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
     class Meta:
         model = Profile
         fields = ['profile_picture', 'bio']
@@ -177,40 +178,122 @@ class PolicyCreationForm(forms.ModelForm):
 
 class EventCreationForm(forms.ModelForm):
     name = forms.CharField()
-    location = forms.CharField()
-    start = forms.DateTimeField()
-    end = forms.DateTimeField()
+    # location = forms.CharField()
+    state = forms.CharField()
+    city = forms.CharField()
+    street = forms.CharField()
+    start_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    start_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
+    end_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    end_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
     desc = forms.TextInput()
+    
     class Meta:
         model = Event
-        fields = ['name', 'location', 'start', 'end', 'desc']
+        fields = ['name', 'desc']
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Clean location data
+        state = cleaned_data.get('state')
+        city = cleaned_data.get('city')
+        street = cleaned_data.get('street')
+
+        # Clean time data
+        start_date = cleaned_data.get('start_date')
+        start_time = cleaned_data.get('start_time')
+        end_date = cleaned_data.get('end_date')
+        end_time = cleaned_data.get('end_time')
+
+        if state and city and street:
+            cleaned_data['location'] = f"{street}, {city}, {state}"
+        else:
+            raise forms.ValidationError("Missing location.")
+
+        if start_date and start_time:
+            cleaned_data['start'] = datetime.combine(start_date, start_time)
+        else:
+            raise forms.ValidationError("Missing start date and/or time.")
+
+        if end_date and end_time:
+            cleaned_data['end'] = datetime.combine(end_date, end_time)
+        else:
+            raise forms.ValidationError("Missing end date and/or time.")
+
+        return cleaned_data
 
     # Ensure getting coordinates location returns a valid address
-        def clean_location(self):
-            location = self.cleaned_data.get('location')
-            mapbox_token = 'pk.eyJ1IjoiY3N0YXJmaXNoIiwiYSI6ImNtM2NobHBpbTF2cGkyaW9sbWgyYjhlYXYifQ.iI1fAgnb4qUJ7J2JmecpYA'
+    def clean_location(self):
+        location = self.cleaned_data.get('location')
+        mapbox_token = 'pk.eyJ1IjoiY3N0YXJmaXNoIiwiYSI6ImNtM2NobHBpbTF2cGkyaW9sbWgyYjhlYXYifQ.iI1fAgnb4qUJ7J2JmecpYA'
 
-            # Request location data from Mapbox API
-            response = requests.get(
-                f'https://api.mapbox.com/geocoding/v5/mapbox.places/{location}.json',
-                params={'access_token': mapbox_token}
-            )
+        # Request location data from Mapbox API
+        response = requests.get(
+            f'https://api.mapbox.com/geocoding/v5/mapbox.places/{location}.json',
+            params={'access_token': mapbox_token}
+        )
 
-            if response.status_code == 200:
-                data = response.json()
+        if response.status_code == 200:
+            data = response.json()
 
-                # Check if the result count is too vague or ambiguous
-                if len(data['features']) > 1:
-                    raise ValidationError("Location is too vague. Please enter a more precise address.")
-                elif len(data['features']) == 0:
-                    raise ValidationError("Could not find this location. Please enter a valid location.")
+            # Check if the result count is too vague or ambiguous
+            if len(data['features']) > 1:
+                raise ValidationError("Location is too vague. Please enter a more precise address.")
+            elif len(data['features']) == 0:
+                raise ValidationError("Could not find this location. Please enter a valid location.")
         
-            return location
+        return location
+    
+    def save(self, commit=True):
+        # Get the cleaned data
+        cleaned_data = self.cleaned_data
+        # Create or update the Event object
+        event = super().save(commit=False)
+
+        # Assign the location, start, and end values to the model instance
+        event.location = cleaned_data.get('location')
+        event.start = cleaned_data.get('start')
+        event.end = cleaned_data.get('end')
+
+        # Save the event instance
+        if commit:
+            event.save()
+
+        return event
+
         
 class EventUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Event
-        fields = ['name', 'location', 'start', 'end', 'desc']
+    state = forms.CharField()
+    city = forms.CharField()
+    street = forms.CharField()
+    start_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    start_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
+    end_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    end_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
+
+    class Meta(EventCreationForm.Meta):
+        pass
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        if self.instance and self.instance.pk:
+            # Split the location into street, city, and state
+            if self.instance.location:
+                location_parts = self.instance.location.split(", ")
+                if len(location_parts) == 3:
+                    self.fields['street'].initial = location_parts[0]
+                    self.fields['city'].initial = location_parts[1]
+                    self.fields['state'].initial = location_parts[2]
+
+            start_datetime = self.instance.start
+            self.fields['start_date'].initial = start_datetime.date()
+            self.fields['start_time'].initial = start_datetime.time()
+            
+            end_datetime = self.instance.end
+            self.fields['end_date'].initial = end_datetime.date()
+            self.fields['end_time'].initial = end_datetime.time()
 
 
 class RatingForm(forms.ModelForm):
