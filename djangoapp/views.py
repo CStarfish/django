@@ -258,7 +258,7 @@ class SearchView(FormView):
                     policies = Policy.objects.all()
                     events = Event.objects.all()
                     election_offices = ElectionOffice.objects.all()
-                    polling_locations = PollingLocation.objects.filter(location__icontains=query)
+                    polling_locations = PollingLocation.objects.all()
 
         return render(self.request, self.template_name, {
             "users": users,
@@ -305,6 +305,7 @@ class CandidacyView(LoginRequiredMixin, FormView):
         user_id = self.request.user.id
         return reverse_lazy('profile', args=[user_id])
     
+
 # Policy creation
 class PolicyCreationView(LoginRequiredMixin, FormView):
     template_name = 'djangoapp/policy_creation.html'
@@ -339,6 +340,7 @@ class PolicyCreationView(LoginRequiredMixin, FormView):
             return reverse_lazy('policy_page', args=[self.policy_id])
         return reverse_lazy('home')
     
+
 # Event creation
 # TODO: Allow updating of events via edit
 class EventCreationView(LoginRequiredMixin, FormView):
@@ -371,9 +373,11 @@ class EventCreationView(LoginRequiredMixin, FormView):
     def get_success_url(self):
         return reverse_lazy('event_page', args=[self.event_id])
 
+
 def PolicyPageView(request, policy_id):
     policy = get_object_or_404(Policy, policy_id=policy_id)
     return render(request, 'djangoapp/policy_page.html', {'policy': policy})
+
 
 class EventPageView(View):
     template_name = 'djangoapp/event_page.html'
@@ -399,7 +403,11 @@ class EventPageView(View):
         if form.is_valid():
             form.save()
             messages.success(request, "Event updated successfully.")
-            return redirect('event_page', event_id=event_id)
+            return render(request, self.template_name, {
+                'event': event,
+                'form': form,
+                'is_creator': is_creator
+            })
         else:
             messages.error(request, "There was an error updating the event.")
             return render(request, self.template_name, {
@@ -407,10 +415,6 @@ class EventPageView(View):
                 'form': form,
                 'is_creator': is_creator
             })
-        
-
-    #event = get_object_or_404(Event, event_id=event_id)
-    #return render(request, 'djangoapp/event_page.html', {'event': event})
 
 
 '''
@@ -521,13 +525,40 @@ class PollingCreationView(LoginRequiredMixin, FormView):
         return reverse_lazy('polling_location', args=[self.polling_location_id])
     
 
-def PollingLocationView(request, polling_location_id):
-    polling_location = get_object_or_404(PollingLocation, polling_location_id=polling_location_id)
-    is_admin = request.user.is_staff
-    return render(request, 'djangoapp/polling_location.html', {
-        'polling_location': polling_location,
-        'is_admin': is_admin
+class PollingLocationView(View):
+    form_class = PollingLocationForm
+    template_name = 'djangoapp/polling_location.html'
+
+    def get(self, request, polling_location_id):
+        polling_location = get_object_or_404(PollingLocation, polling_location_id=polling_location_id)
+        form = PollingLocationUpdateForm(instance=polling_location)
+        is_creator = polling_location.office.user.user == request.user
+        return render(request, self.template_name, {
+            'polling_location': polling_location,
+            'form': form,
+            'is_creator': is_creator
         })
+
+    def post(self, request, polling_location_id):
+        polling_location = get_object_or_404(PollingLocation, polling_location_id=polling_location_id)
+        is_creator = polling_location.office.user == request.user
+        if not is_creator:
+            messages.error(request, "You do not have permission to edit this Polling Location.")
+            return redirect('polling_location', polling_location_id=polling_location_id)
+        
+        form = PollingLocationUpdateForm(request.POST, instance=polling_location)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Polling location updated successfully.")
+            return redirect('polling_location', polling_location_id=polling_location_id)
+        else:
+            messages.error(request, "There was an error updating the polling location.")
+            return render(request, self.template_name, {
+                'polling_location': polling_location,
+                'form': form,
+                'is_creator': is_creator
+            })
+
 
 class PollingLocationEditView(LoginRequiredMixin, View):
     template_name = 'djangopapp/polling_edit.html'
@@ -552,6 +583,7 @@ class PollingLocationEditView(LoginRequiredMixin, View):
                 'form': form,
                 'polling_location': polling_location
             })
+
 
 # View to follow a candidate or event
 def FollowView(request, candidate_id=None, event_id=None):
@@ -587,6 +619,7 @@ def GetMapboxToken(request):
         return JsonResponse({'error': 'Mapbox access token not configured.'}, status=400)
     
     return JsonResponse({'mapbox_token': mapbox_token})
+
 
 @login_required
 def MessagesView(request):

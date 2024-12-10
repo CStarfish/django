@@ -190,7 +190,7 @@ class EventCreationForm(forms.ModelForm):
     
     class Meta:
         model = Event
-        fields = ['name', 'desc']
+        fields = ['name', 'state', 'city', 'street', 'start_date', 'start_time', 'end_date', 'end_time', 'desc']
 
     def clean(self):
         cleaned_data = super().clean()
@@ -263,7 +263,8 @@ class EventCreationForm(forms.ModelForm):
         return event
 
         
-class EventUpdateForm(forms.ModelForm):
+class EventUpdateForm(EventCreationForm):
+    name = forms.CharField()
     state = forms.CharField()
     city = forms.CharField()
     street = forms.CharField()
@@ -271,6 +272,7 @@ class EventUpdateForm(forms.ModelForm):
     start_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
     end_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     end_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
+    desc = forms.TextInput()
 
     class Meta(EventCreationForm.Meta):
         pass
@@ -318,36 +320,91 @@ class RatingForm(forms.ModelForm):
 
 
 class PollingLocationForm(forms.ModelForm):
+    state = forms.CharField()
+    city = forms.CharField()
+    street = forms.CharField()
+
     class Meta:
         model = PollingLocation
-        fields = ['name', 'location', 'contact_info', 'location_picture']
+        fields = ['name', 'contact_info', 'location_picture']
 
         name = forms.CharField()
         location = forms.CharField()
         contact_info = forms.CharField()
         location_picture = forms.ImageField(widget = forms.FileInput(attrs={'class': 'form-control-file'}))
 
-        # Ensure getting coordinates location returns a valid address
-        def clean_location(self):
-            location = self.cleaned_data.get('location')
-            mapbox_token = 'pk.eyJ1IjoiY3N0YXJmaXNoIiwiYSI6ImNtM2NobHBpbTF2cGkyaW9sbWgyYjhlYXYifQ.iI1fAgnb4qUJ7J2JmecpYA'
+    def clean(self):
+        cleaned_data = super().clean()
 
-            # Request location data from Mapbox API
-            response = requests.get(
-                f'https://api.mapbox.com/geocoding/v5/mapbox.places/{location}.json',
-                params={'access_token': mapbox_token}
-            )
+        state = cleaned_data.get('state')
+        city = cleaned_data.get('city')
+        street = cleaned_data.get('street')
 
-            if response.status_code == 200:
-                data = response.json()
+        if state and city and street:
+            cleaned_data['location'] = f"{street}, {city}, {state}"
+        else:
+            raise forms.ValidationError("Missing location.")
 
-                # Check if the result count is too vague or ambiguous
-                if len(data['features']) > 1:
-                    raise ValidationError("Location is too vague. Please enter a more precise address.")
-                elif len(data['features']) == 0:
-                    raise ValidationError("Could not find this location. Please enter a valid location.")
+        return cleaned_data
+
+    # Ensure getting coordinates location returns a valid address
+    def clean_location(self):
+        location = self.cleaned_data.get('location')
+        mapbox_token = 'pk.eyJ1IjoiY3N0YXJmaXNoIiwiYSI6ImNtM2NobHBpbTF2cGkyaW9sbWgyYjhlYXYifQ.iI1fAgnb4qUJ7J2JmecpYA'
+
+        # Request location data from Mapbox API
+        response = requests.get(
+            f'https://api.mapbox.com/geocoding/v5/mapbox.places/{location}.json',
+            params={'access_token': mapbox_token}
+        )
+
+        if response.status_code == 200:
+            data = response.json()
+
+            # Check if the result count is too vague or ambiguous
+            if len(data['features']) > 1:
+                raise ValidationError("Location is too vague. Please enter a more precise address.")
+            elif len(data['features']) == 0:
+                raise ValidationError("Could not find this location. Please enter a valid location.")
         
-            return location
+        return location
+    
+    def save(self, commit=True):
+        # Get the cleaned data
+        cleaned_data = self.cleaned_data
+        # Create or update the Event object
+        polling_location = super().save(commit=False)
+
+        # Assign the location, start, and end values to the model instance
+        polling_location.location = cleaned_data.get('location')
+
+        # Save the event instance
+        if commit:
+            polling_location.save()
+
+        return polling_location
+
+
+class PollingLocationUpdateForm(forms.ModelForm):
+    state = forms.CharField()
+    city = forms.CharField()
+    street = forms.CharField()
+
+    class Meta(PollingLocationForm.Meta):
+        pass
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        if self.instance and self.instance.pk:
+            # Split the location into street, city, and state
+            if self.instance.location:
+                location_parts = self.instance.location.split(", ")
+                if len(location_parts) == 3:
+                    self.fields['street'].initial = location_parts[0]
+                    self.fields['city'].initial = location_parts[1]
+                    self.fields['state'].initial = location_parts[2]
+
         
 class MessageForm(forms.ModelForm):
     class Meta:

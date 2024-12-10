@@ -1,5 +1,5 @@
 {% extends "djangoapp/base.html"}
-{% block title %} Polling Loccation Creation Page {% endlbock title%}
+{% block title %} Polling Location Edit Page {% endlbock title%}
 {% load static %}
 {% block content %}
 <div class = 'container'>
@@ -20,11 +20,33 @@
 		<fieldset>
 			<legend>Edit Polling Location</legend>
             <div>
-                <label for="polling_name">Name:</label>
-                <p>{{ form.as_p }}</p>
-				<button type="submit" class="btn btn-primary">Save Changes</button>
+                <div>
+					<label for="polling_name">Name:</label>
+					<p>{{ form.name }}</p>
+				</div>
+				<div>
+					<label for="polling_state">State:</label>
+					<p>{{ form.state }}</p>
+				</div>
+				<div>
+					<label for="polling_city">City:</label>
+					<p>{{ form.city }}</p>
+				</div>
+				<div>
+					<label for="polling_street">Street:</label>
+					<p>{{ form.street }}</p>
+				</div>
+				<div>
+					<label for="polling_contract_info">Contract info:</label>
+					<p>{{ form.contact_info }}</p>
+				</div>
+				<div>
+					<label class="small mb-1">Location picture (optional):</label>
+					<p>{{ form.location_picture }}</p>
+				</div>
             </div>
 		</fieldset>
+		<button type="submit" class="btn btn-primary">Save Changes</button>
 	</form>
 </div>
 {% endblock %}

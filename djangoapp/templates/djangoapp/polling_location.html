@@ -13,8 +13,54 @@
     <p><strong>{{ polling_location.location }}</strong></p>
     {% include 'djangoapp/mapapi.html' with longitude=polling_location.longitude latitude=polling_location.latitude %}
     <img src="{{ polling_location.location_picture.url }}" class="card-img-top" alt="Location Image"/>
-    {% if is_admin %}
-        <a href="{% url 'polling_edit' polling_location.id %}" class="btn btn-primary">Edit</a>
+    {% if is_creator %}
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Include error messages -->
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for field, errors in form.items %}
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <!-- Polling location field -->
+            <fieldset>
+                <legend>Add Polling Location</legend>
+                <div>
+                    <label for="polling_name">Name:</label>
+                    <p>{{ form.name }}</p>
+                </div>
+                <div>
+                    <label for="polling_state">State:</label>
+                    <p>{{ form.state }}</p>
+                </div>
+                <div>
+                    <label for="polling_city">City:</label>
+                    <p>{{ form.city }}</p>
+                </div>
+                <div>
+                    <label for="polling_street">Street:</label>
+                    <p>{{ form.street }}</p>
+                </div>
+                <div>
+                    <label for="polling_contract_info">Contract info:</label>
+                    <p>{{ form.contact_info }}</p>
+                </div>
+                <div>
+                    <label class="small mb-1">Upload location picture (optional):</label>
+                    <p>{{ form.location_picture }}</p>
+                </div>
+            </fieldset>
+            <div>
+                <button type="submit">Save Changes</button>
+            </div>
+        </form>
     {% endif %}
 </div>
 {% endblock %}
