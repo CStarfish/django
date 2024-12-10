@@ -22,7 +22,6 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="content-container">
-                <h2 class="form-title">Create Event</h2>
                 <div class="form-group">
                     <label for="event_name" class="form-label">Event Name:</label>
                     {{ form.name }}
